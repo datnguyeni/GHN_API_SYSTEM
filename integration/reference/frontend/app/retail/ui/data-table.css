@@ -1,0 +1,371 @@
+.data-table-wrap{width:100%;overflow-x:auto}.data-table{width:100%;min-width:980px;border-collapse:collapse}.data-table th{height:38px;padding:9px 14px;border-bottom:1px solid var(--sidebar-foreground);background:var(--muted);color:var(--muted-foreground);font-size:10px;font-weight:700;letter-spacing:.25px;text-align:left;white-space:nowrap}.data-table td{height:54px;padding:10px 14px;border-top:1px solid var(--muted);color:var(--foreground);font-size:11px;vertical-align:middle}.data-table tbody tr:hover{background:var(--card)}.data-table td strong,.data-table td small{display:block}.data-table td strong{font-weight:700}.data-table td small{margin-top:3px;color:var(--muted-foreground);font-size:10px}.data-action-menu{position:relative;display:inline-flex;align-items:center}.data-action-trigger{width:34px;height:31px;margin:0;padding:0;border:1px solid var(--sidebar-foreground);border-radius:8px;background:var(--card);color:var(--secondary-foreground);font-size:16px;line-height:1;letter-spacing:1px}.data-action-trigger:hover{border-color:var(--muted-foreground);background:var(--muted);color:var(--primary)}.data-action-popover{position:absolute;z-index:30;right:0;top:calc(100% + 7px);width:190px;padding:7px;border:1px solid var(--sidebar-foreground);border-radius:11px;background:var(--card);box-shadow:0 12px 28px rgba(20,57,47,.15)}.data-action-popover button{display:flex;width:100%;align-items:center;gap:9px;margin:0;padding:9px 8px;border:0;border-radius:7px;background:var(--card);color:var(--foreground);text-align:left;font-size:11px}.data-action-popover button:hover{background:var(--muted)}.data-action-popover button span{display:grid;width:22px;height:22px;place-items:center;border-radius:6px;background:var(--secondary);color:var(--primary);font-size:12px}.data-action-popover button strong{font-weight:700}
+.resource-scope-tabs{display:flex;gap:8px;padding:14px 18px 10px;border-bottom:1px solid var(--muted);overflow-x:auto}.resource-scope-tabs button{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--sidebar-foreground);border-radius:999px;padding:8px 12px;background:var(--card);color:var(--muted-foreground);font-size:11px;white-space:nowrap}.resource-scope-tabs button span{display:grid;min-width:19px;height:19px;place-items:center;border-radius:999px;background:var(--muted);color:var(--muted-foreground);font-size:9px}.resource-scope-tabs button.active{border-color:var(--primary);background:var(--primary);color:var(--primary-foreground)}.resource-scope-tabs button.active span{background:var(--secondary);color:var(--primary)}.resource-scope-history{display:flex;flex-direction:column;gap:10px;max-height:440px;overflow:auto;padding:18px 22px}.resource-scope-history>p{color:var(--muted-foreground);font-size:12px}.resource-scope-history article{padding:13px;border:1px solid var(--sidebar-foreground);border-radius:9px;background:var(--card)}.resource-scope-history article>div{display:flex;justify-content:space-between;gap:10px}.resource-scope-history article strong{color:var(--accent-foreground);font-size:12px}.resource-scope-history article time{color:var(--muted-foreground);font-size:10px}.resource-scope-history article p{margin:8px 0;color:var(--secondary-foreground);font-size:12px;line-height:1.5;white-space:pre-wrap}.resource-scope-history article small{color:var(--muted-foreground);font-size:10px}
+.crm-quotes .p-table-toolbar{display:flex;gap:9px;padding:14px 18px;border-bottom:1px solid var(--muted)}
+.crm-quotes .p-table-toolbar input{flex:1;min-width:0;border:1px solid var(--sidebar-foreground);border-radius:8px;padding:10px 12px;color:var(--foreground);background:var(--card)}
+.crm-quotes .p-table-toolbar select{min-width:180px;border:1px solid var(--sidebar-foreground);border-radius:8px;padding:10px 12px;color:var(--foreground);background:var(--card)}
+.crm-quote-status{display:inline-flex;border-radius:999px;padding:4px 9px;background:var(--muted);color:var(--muted-foreground);font-size:12px}
+.crm-quote-status.approved{background:var(--secondary);color:var(--secondary-foreground)}.crm-quote-status.pending{background:var(--muted);color:var(--warning)}.crm-quote-status.rejected{background:var(--muted);color:var(--destructive)}
+.crm-quotes{max-width:1400px;margin:auto;color:var(--foreground)}.crm-quotes .p-title{margin-bottom:24px}.crm-quotes .p-title h1{font-size:26px;margin:8px 0}.crm-quotes .p-title p{font-size:13px;line-height:1.6;color:var(--muted-foreground)}.crm-quotes .p-panel{margin-top:0;padding:0;background:var(--card);border:1px solid var(--sidebar-foreground);border-radius:14px;overflow:hidden}.crm-quotes .data-table-wrap{overflow:auto}.crm-quotes .data-table{min-width:1100px}.crm-quotes .data-table th{padding:13px 14px}.crm-quotes .data-table td{padding:14px 14px}
+.shared-workspace-shell main > .crm-quotes.contracts-dashboard{width:100%;max-width:none;margin:0}
+.crm-quotes.contracts-dashboard{min-height:100%;box-sizing:border-box;padding:0 30px 30px;background:#eff8f2}
+.crm-quotes .contract-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:0 0 22px}
+.crm-quotes .contract-metric{position:relative;display:block;grid-template-columns:none;grid-template-rows:none;min-height:148px;box-sizing:border-box;padding:34px 22px 20px;border:1px solid #dce8e1;border-top:3px solid #3d9a78;border-radius:17px;background:linear-gradient(135deg,#fff 0%,#f7fbf9 100%);box-shadow:0 10px 24px rgba(20,57,47,.07);overflow:hidden}
+.crm-quotes .contract-metric::after{content:"";position:absolute;right:-24px;bottom:-30px;width:92px;height:92px;border-radius:50%;background:currentColor;opacity:.07}
+.crm-quotes .contract-metric>span{display:block;color:#61796c;font-size:11px;font-weight:750;letter-spacing:.35px;text-transform:uppercase}
+.crm-quotes .contract-metric>strong{display:block;grid-column:auto;margin-top:20px;color:#19382f;font-size:25px;line-height:1.15;font-variant-numeric:tabular-nums}
+.crm-quotes .contract-metric>small{display:block;margin-top:10px;color:#82958b;font-size:11px;line-height:1.45}
+.crm-quotes .contract-metric-total{color:#3d9a78;border-top-color:#3d9a78}
+.crm-quotes .contract-metric-paid{color:#14795f;border-top-color:#14795f}
+.crm-quotes .contract-metric-debt{color:#bd7a2d;border-top-color:#d89a4c}
+@media(max-width:980px){.crm-quotes .contract-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:980px){.crm-quotes.contracts-dashboard{padding:0 20px 24px}}
+@media(max-width:640px){.crm-quotes.contracts-dashboard{padding:0 12px 18px}.crm-quotes .contract-metrics{grid-template-columns:1fr;gap:10px}.crm-quotes .contract-metric{min-height:124px;padding:26px 17px 18px}.crm-quotes .contract-metric>strong{font-size:22px;margin-top:14px}}
+.resource-scope{max-width:1400px;margin:auto;color:var(--foreground)}.resource-scope .p-title{margin-bottom:24px}.resource-scope .p-title h1{font-size:26px;margin:8px 0}.resource-scope .p-title p{font-size:13px;line-height:1.6;color:var(--muted-foreground)}.resource-scope .p-panel{margin-top:0;padding:0;background:var(--card);border:1px solid var(--sidebar-foreground);border-radius:14px;overflow:hidden}.resource-scope .p-panel-head{padding:14px 18px}.resource-scope .data-table-wrap{overflow:auto}.resource-scope .data-table{min-width:980px}.resource-scope .data-table th{padding:13px 14px}.resource-scope .data-table td{padding:14px 14px}
+.customer-care .cc-table,.pm-table{width:100%;overflow-x:auto}.customer-care .cc-table table,.pm-table table{width:100%;min-width:980px;border-collapse:collapse}.customer-care .cc-table th,.pm-table th{height:38px;padding:9px 14px;border-bottom:1px solid var(--sidebar-foreground);background:var(--muted);color:var(--muted-foreground);font-size:10px;font-weight:700;letter-spacing:.25px;text-align:left;white-space:nowrap}.customer-care .cc-table td,.pm-table td{height:54px;padding:10px 14px;border-top:1px solid var(--muted);color:var(--foreground);font-size:11px;vertical-align:middle}.customer-care .cc-table tbody tr:hover,.pm-table tbody tr:hover{background:var(--card)}.customer-care .cc-table td strong,.customer-care .cc-table td small,.pm-table td strong,.pm-table td small{display:block}.customer-care .cc-table td small,.pm-table td small{margin-top:3px;color:var(--muted-foreground);font-size:10px}
+
+/* Table readability: keep row text independent from theme token overrides. */
+.data-table th,.customer-care .cc-table th,.pm-table th{border-bottom-color:#dfeae3;background:#f3f8f4;color:#496554}
+.data-table td,.customer-care .cc-table td,.pm-table td{border-top-color:#edf2ee;color:#19382f}
+.data-table tbody tr:hover,.customer-care .cc-table tbody tr:hover,.pm-table tbody tr:hover{background:#f7fbf8}
+.data-table td small,.customer-care .cc-table td small,.pm-table td small{color:#82958b}
+.data-action-trigger{border-color:#d8e6de;background:#fff;color:#31584a}
+.data-action-trigger:hover{border-color:#73bda5;background:#f1f9f5;color:#14795f}
+.data-action-popover{border-color:#dce8e1;background:#fff}
+.data-action-popover button{background:#fff;color:#19382f}
+.data-action-popover button:hover{background:#f1f8f4}
+
+/* Kế toán: Công nợ và Thu chi dùng cùng bố cục với Quản lý hợp đồng. */
+.accounting-workspace{min-height:100%;margin:-24px -30px -30px;padding:24px 30px 32px;background:#eff8f2;color:#19382f}
+.accounting-workspace>.p-title{margin:0 0 22px}
+.accounting-workspace>.p-title h1{margin:8px 0;font-size:26px;color:#19382f}
+.accounting-workspace>.p-title p{margin:0;color:#61796c;font-size:13px;line-height:1.6}
+.accounting-workspace>.p-title .r-actions{display:flex;align-items:center;gap:10px}
+.accounting-workspace>.p-title .r-actions button{min-height:40px;padding:0 15px;border:1px solid #d5e3db;border-radius:10px;background:#fff;color:#31584a;font-size:12px;font-weight:700}
+.accounting-workspace>.p-title .r-actions button:hover:not(:disabled){border-color:#73bda5;background:#f5fbf7}
+.accounting-workspace>.p-title .r-actions .primary{border-color:#14795f;background:#14795f;color:#fff}
+.accounting-workspace>.p-title .r-actions .primary:hover:not(:disabled){border-color:#0f6550;background:#0f6550}
+.accounting-dashboard{display:flex;flex-direction:column;gap:20px}
+.accounting-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.accounting-metric{position:relative;min-width:0;min-height:132px;box-sizing:border-box;padding:26px 20px 18px;border:1px solid #dce8e1;border-top:3px solid #3d9a78;border-radius:16px;background:linear-gradient(135deg,#fff 0%,#f8fcfa 100%);box-shadow:0 9px 22px rgba(20,57,47,.06);overflow:hidden}
+.accounting-metric::after{content:"";position:absolute;right:-26px;bottom:-34px;width:92px;height:92px;border-radius:50%;background:currentColor;opacity:.065}
+.accounting-metric>span{display:block;color:#61796c;font-size:10px;font-weight:750;letter-spacing:.45px;text-transform:uppercase}
+.accounting-metric>strong{display:block;margin-top:17px;color:#19382f;font-size:23px;line-height:1.2;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.accounting-metric>small{display:block;margin-top:8px;color:#82958b;font-size:10px;line-height:1.45}
+.accounting-metric.positive{color:#14795f;border-top-color:#14795f}
+.accounting-metric.negative{color:#4d6f9f;border-top-color:#6c8bb5}
+.accounting-metric.warning{color:#bd7a2d;border-top-color:#d89a4c}
+.accounting-metric.neutral{color:#61796c;border-top-color:#91a69b}
+.accounting-toolbar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:17px 18px;border:1px solid #dce8e1;border-radius:14px;background:#fff}
+.accounting-toolbar h2{margin:0;color:#19382f;font-size:16px}
+.accounting-toolbar p{margin:5px 0 0;color:#7d9189;font-size:11px}
+.accounting-toolbar>div:last-child{display:flex;align-items:center;gap:9px;flex-shrink:0}
+.accounting-toolbar button,.accounting-row-action{min-height:36px;padding:0 13px;border:1px solid #d5e3db;border-radius:9px;background:#fff;color:#31584a;font-size:11px;font-weight:700}
+.accounting-toolbar button:hover:not(:disabled),.accounting-row-action:hover:not(:disabled){border-color:#73bda5;background:#f1f9f5;color:#14795f}
+.accounting-panel{margin:0!important;padding:0!important;border:1px solid #dce8e1!important;border-radius:14px!important;background:#fff!important;box-shadow:0 8px 22px rgba(20,57,47,.045);overflow:hidden}
+.accounting-panel .data-table-wrap{overflow:auto}
+.accounting-panel .data-table{min-width:980px}
+.accounting-panel .data-table th{height:42px;padding:10px 14px;background:#f3f8f4;color:#496554;font-size:10px;letter-spacing:.25px}
+.accounting-panel .data-table td{height:58px;padding:11px 14px;color:#19382f;font-size:11px;vertical-align:middle}
+.accounting-panel .data-table td strong,.accounting-panel .data-table td small{display:block}
+.accounting-panel .data-table td small{margin-top:4px;color:#82958b;font-size:10px}
+.accounting-panel .data-table tbody tr:hover{background:#f7fbf8}
+.accounting-money{text-align:right!important;font-variant-numeric:tabular-nums;white-space:nowrap}
+.accounting-remaining{color:#a66016!important;font-weight:750}
+.money-in{color:#14795f!important;font-weight:750}
+.money-out{color:#a44b43!important;font-weight:750}
+.cashflow-panel-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px 16px;border-bottom:1px solid #e7efe9;background:linear-gradient(180deg,#fff 0%,#fbfdfb 100%)}
+.cashflow-panel-head h2{margin:3px 0 0;color:#19382f;font-size:16px;line-height:1.35}
+.cashflow-panel-head p{max-width:720px;margin:6px 0 0;color:#7d9189;font-size:11px;line-height:1.55}
+.cashflow-count{display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:0 10px;border-radius:999px;background:#edf6f1;color:#31584a;font-size:10px;font-weight:750;white-space:nowrap}
+.cashflow-table .data-table{min-width:1060px}
+.cashflow-table :is(th,td):nth-child(1),.cashflow-table :is(th,td):nth-child(2),.cashflow-table :is(th,td):nth-child(3),.cashflow-table :is(th,td):nth-child(5),.cashflow-table :is(th,td):nth-child(6),.cashflow-table :is(th,td):nth-child(7){text-align:center!important}
+.cashflow-time{color:#496554!important;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cashflow-method{display:inline-flex;align-items:center;justify-content:center;min-height:26px;padding:0 9px;border:1px solid #dce8e1;border-radius:7px;background:#f8fbf9;color:#496554;font-size:10px;font-weight:650;white-space:nowrap}
+.cashflow-amount{font-size:12px!important;font-weight:800!important}
+.cashflow-amount>span{display:inline!important;margin-right:2px}
+.cashflow-unallocated{display:inline-flex;justify-content:center;min-width:68px;color:#6f857a;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cashflow-unallocated.is-open{padding:5px 8px;border-radius:999px;background:#fff4df;color:#a96618;font-weight:750}
+.cashflow-reference{max-width:260px;color:#496554!important;line-height:1.5;overflow-wrap:anywhere}
+.accounting-badge{display:inline-flex;align-items:center;min-height:25px;padding:0 9px;border-radius:999px;background:#eef4f0;color:#496554;font-size:10px;font-weight:700;white-space:nowrap}
+.accounting-badge.receivable,.accounting-badge.income{background:#e9f6ef;color:#14795f}
+.accounting-badge.payable,.accounting-badge.expense{background:#fff1ee;color:#a44b43}
+.accounting-row-action{border-color:#b9dccd;color:#14795f;white-space:nowrap}
+.accounting-debt .accounting-dashboard{gap:16px}
+.debt-panel-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px 16px;border-bottom:1px solid #e7efe9;background:linear-gradient(180deg,#fff 0%,#fbfdfb 100%)}
+.debt-panel-head h2{margin:3px 0 0;color:#19382f;font-size:16px;line-height:1.35}
+.debt-panel-head p{max-width:720px;margin:6px 0 0;color:#7d9189;font-size:11px;line-height:1.55}
+.debt-panel-kicker{display:block;color:#14795f;font-size:9px;font-weight:800;letter-spacing:.75px;text-transform:uppercase}
+.debt-pending-count,.debt-open-count{display:inline-flex;align-items:center;justify-content:center;min-height:28px;padding:0 10px;border-radius:999px;font-size:10px;font-weight:750;white-space:nowrap}
+.debt-pending-count{background:#fff4df;color:#a96618}
+.debt-open-count{background:#edf6f1;color:#31584a}
+.debt-approval-panel{border-color:#d7e8df!important}
+.debt-approval-table .data-table{min-width:1080px}
+.debt-approval-table tr.is-pending td{background:#fffdf8}
+.debt-table :is(th,td):nth-child(5),.debt-table :is(th,td):nth-child(6),.debt-table :is(th,td):nth-child(7),.debt-table :is(th,td):nth-child(8){text-align:center!important}
+.debt-request-amount{color:#14795f!important;font-weight:800}
+.debt-method{display:inline-flex;align-items:center;min-height:26px;padding:0 9px;border:1px solid #dce8e1;border-radius:7px;background:#f8fbf9;color:#496554;font-size:10px;font-weight:650}
+.debt-request-note{max-width:220px;overflow:hidden;text-overflow:ellipsis;color:#61796c!important}
+.debt-decision-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px}
+.debt-decision-actions button,.debt-decision-modal .p-modal-actions button{min-height:34px;padding:0 12px;border-radius:8px;font-size:10px;font-weight:750}
+.debt-approve{border:1px solid #14795f!important;background:#14795f!important;color:#fff!important}
+.debt-approve:hover:not(:disabled){border-color:#0f6550!important;background:#0f6550!important}
+.debt-reject{border:1px solid #e2b8b3!important;background:#fff!important;color:#a44b43!important}
+.debt-reject:hover:not(:disabled){background:#fff4f2!important}
+.debt-completed-label{color:#82958b;font-size:10px;font-weight:650;white-space:nowrap}
+.debt-empty{border-top:0}
+.debt-decision-modal{width:min(620px,calc(100vw - 32px))!important}
+.debt-decision-modal .p-modal-head{display:flex;align-items:flex-start;justify-content:space-between}
+.debt-decision-modal .p-modal-head h2{margin:4px 0 0!important}
+.debt-decision-modal .p-modal-head>button{display:grid;place-items:center;width:34px;height:34px;padding:0;border:1px solid #dce8e1;border-radius:9px;background:#fff;color:#61796c}
+.debt-decision-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.debt-decision-summary>div{min-width:0;padding:12px 14px;border:1px solid #e1ebe5;border-radius:10px;background:#fff}
+.debt-decision-summary span,.debt-decision-summary strong{display:block}
+.debt-decision-summary span{color:#82958b;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.35px}
+.debt-decision-summary strong{margin-top:6px;color:#19382f;font-size:12px;overflow-wrap:anywhere}
+.debt-decision-notice{margin:14px 0;padding:11px 13px;border-radius:9px;font-size:11px;line-height:1.55}
+.debt-decision-notice.approve{background:#eaf6ef;color:#31584a}
+.debt-decision-notice.reject{background:#fff1ee;color:#844139}
+.debt-decision-modal label{display:grid;gap:7px}
+.debt-decision-modal textarea{resize:vertical;line-height:1.55}
+.accounting-empty{display:flex;flex-direction:column;align-items:center;gap:6px;padding:40px 20px;border-top:1px solid #edf2ee;text-align:center}
+.accounting-empty strong{color:#31584a;font-size:13px}
+.accounting-empty span{color:#82958b;font-size:11px}
+.accounting-pagination{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 20px;border-top:1px solid #e7efe9;background:#fbfdfb;color:#73887e;font-size:11px}
+.accounting-pagination>div{display:flex;align-items:center;gap:9px}
+.accounting-pagination strong{min-width:82px;color:#49675b;font-size:11px;text-align:center}
+.accounting-pagination button{min-height:32px;padding:0 12px;border:1px solid #d5e3db;border-radius:8px;background:#fff;color:#31584a;font-size:11px;font-weight:700}
+.accounting-pagination button:hover:not(:disabled){border-color:#73bda5;background:#f1f9f5;color:#14795f}
+.accounting-pagination button:disabled{cursor:not-allowed;opacity:.45}
+.commission-panel{overflow:hidden}
+.commission-panel-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px 16px;border-bottom:1px solid #e7efe9;background:linear-gradient(180deg,#fff 0%,#fbfdfb 100%)}
+.commission-panel-head h2{margin:3px 0 0;color:#19382f;font-size:16px;line-height:1.35}
+.commission-panel-head p{max-width:720px;margin:6px 0 0;color:#7d9189;font-size:11px;line-height:1.55}
+.commission-panel-kicker{color:#087a5b;font-size:10px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.commission-create,.commission-pay-action{border:1px solid #0b8a68!important;background:#0b8a68!important;color:#fff!important;font-weight:700;white-space:nowrap}
+.commission-section+.commission-section{border-top:1px solid #e7efe9}
+.commission-section-head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 20px 11px}
+.commission-section-head h3{margin:0;color:#31584a;font-size:13px;font-weight:750}
+.commission-section-head p{margin:4px 0 0;color:#82958b;font-size:11px;line-height:1.5}
+.commission-count{flex:none;padding:6px 10px;border:1px solid #dcebe4;border-radius:999px;background:#f2f8f5;color:#39705d;font-size:10px;font-weight:750;white-space:nowrap}
+.commission-balance-table,.commission-history-table{margin-top:0}
+.commission-balance-table :is(th,td):nth-child(4),.commission-balance-table :is(th,td):nth-child(5),.commission-balance-table :is(th,td):nth-child(6),.commission-balance-table :is(th,td):nth-child(7),.commission-history-table :is(th,td):nth-child(4),.commission-history-table :is(th,td):nth-child(7){text-align:center}
+.commission-period{display:inline-flex;padding:4px 8px;border-radius:6px;background:#f3f6f4;color:#526a60;font-size:11px;font-weight:650;white-space:nowrap}
+.commission-remaining{display:inline-flex;justify-content:center;min-width:88px;padding:5px 9px;border-radius:999px;background:#fff4e5;color:#a66108;font-weight:800;white-space:nowrap}
+.commission-remaining.is-paid{background:#eef6f2;color:#568070}
+.commission-kind{display:inline-flex;padding:5px 8px;border-radius:999px;background:#eaf6f1;color:#087a5b;font-size:10px;font-weight:750;white-space:nowrap}
+.commission-kind.monthly_addition{background:#edf3ff;color:#456aa5}
+.commission-kind.adjustment{background:#fff4e5;color:#a66108}
+.commission-entry-amount{color:#087a5b;font-weight:800}
+.commission-entry-amount.is-negative{color:#b74e4e}
+.commission-complete{color:#7c9188;font-size:11px;font-weight:650;white-space:nowrap}
+.commission-empty{border-top:1px solid #edf2ee}
+.accounting-workspace .r-modal{width:min(760px,calc(100vw - 32px));border:1px solid #dce8e1;border-radius:18px;background:#fff;box-shadow:0 24px 70px rgba(9,35,28,.2);overflow:hidden}
+.accounting-workspace .r-modal .p-modal-head{padding:20px 24px;border-bottom:1px solid #e6efe9;background:#fff}
+.accounting-workspace .r-modal .p-modal-head h2{margin:0;color:#19382f;font-size:18px}
+.accounting-workspace .r-modal .p-modal-body{padding:22px 24px;background:#fbfdfb}
+.accounting-workspace .r-modal .p-form-two{gap:16px 14px}
+.accounting-workspace .r-modal label{color:#31584a;font-size:11px;font-weight:700}
+.accounting-workspace .r-modal :is(input,select,textarea){min-height:42px;border-color:#d5e3db;border-radius:10px;background:#fff;color:#19382f}
+.accounting-workspace .r-modal :is(input,select,textarea):focus{outline:0;border-color:#309a78;box-shadow:0 0 0 3px rgba(48,154,120,.12)}
+.accounting-workspace .r-modal .p-modal-actions{padding:16px 24px;border-top:1px solid #e6efe9;background:#fff}
+.accounting-workspace .r-modal .p-modal-actions .primary{min-height:41px;padding:0 18px;border-radius:10px;background:#14795f;color:#fff}
+@media(max-width:1100px){.accounting-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){
+ .accounting-workspace{margin:-16px;padding:18px 16px 24px}
+ .accounting-workspace>.p-title{align-items:flex-start;gap:16px}
+ .accounting-workspace>.p-title,.accounting-toolbar{flex-direction:column}
+ .accounting-workspace>.p-title .r-actions,.accounting-toolbar>div:last-child{width:100%;flex-wrap:wrap}
+ .accounting-workspace>.p-title .r-actions button,.accounting-toolbar button{flex:1}
+ .accounting-toolbar{align-items:stretch}
+ .debt-panel-head,.cashflow-panel-head{align-items:flex-start;flex-direction:column;padding:16px}
+ .commission-panel-head,.commission-section-head{align-items:flex-start;flex-direction:column;padding:16px}
+ .commission-create{width:100%}
+ .commission-balance-table,.commission-history-table{overflow-x:auto}
+ .accounting-pagination{align-items:stretch;flex-direction:column;padding:12px 16px}
+ .accounting-pagination>div{justify-content:space-between}
+ .debt-decision-summary{grid-template-columns:1fr}
+ .accounting-workspace .r-modal .p-modal-head,.accounting-workspace .r-modal .p-modal-body,.accounting-workspace .r-modal .p-modal-actions{padding-left:18px;padding-right:18px}
+}
+@media(max-width:560px){
+ .accounting-metrics{grid-template-columns:1fr;gap:10px}
+ .accounting-metric{min-height:114px;padding:22px 17px 16px}
+ .accounting-metric>strong{margin-top:12px;font-size:21px}
+}
+
+/* Modal chi tiết báo giá (Manager duyệt): dựng trên khung .resource-scope-modal của globals.css. */
+.quote-detail-modal>section{width:min(940px,100%);max-height:min(88vh,880px);display:flex;flex-direction:column}
+.quote-detail-modal header{gap:12px;align-items:center}
+.quote-detail-modal header h2{margin:0;font-size:18px;line-height:1.35}
+.quote-detail-head-side{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.quote-detail-body{display:flex;flex-direction:column;gap:14px;padding:18px 22px;overflow:auto;background:#fff}
+.quote-detail-alert{border:1px solid #eec7c2;border-radius:9px;background:#fdf3f2;color:#9d2f24;padding:10px 12px;font-size:12px;line-height:1.5}
+/* Thông tin: 2 cột nhóm bằng nhau, mỗi field một ô; ô giãn đều để cột ngắn không lệch đáy. */
+.quote-detail-groups{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.quote-fact-group{display:flex;flex-direction:column;gap:8px;min-width:0}
+.quote-fact-group>h3{margin:0;color:#61796c;font-size:10px;font-weight:750;letter-spacing:.7px;text-transform:uppercase}
+.quote-detail-facts{display:grid;gap:8px;margin:0;align-content:start}
+.quote-detail-facts>div{padding:9px 11px;border:1px solid #e6efe9;border-radius:9px;background:#fbfdfb}
+.quote-detail-facts dt{color:#61796c;font-size:10px;font-weight:750;letter-spacing:.5px;text-transform:uppercase}
+.quote-detail-facts dd{margin:4px 0 0;color:#19382f;font-size:12px;line-height:1.45;overflow-wrap:anywhere}
+.quote-detail-facts dd strong{font-weight:700}
+.quote-detail-facts dd small{display:block;margin-top:3px;color:#7d9189;font-size:11px}
+.quote-only-detail{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}.quote-only-detail li{padding:9px 11px;border:1px solid #e6efe9;border-radius:9px;background:#fbfdfb}.quote-only-detail small{display:block;margin-top:3px;color:#7d9189;font-size:11px}
+.quote-detail-lines{display:flex;flex-direction:column;gap:10px}
+.quote-detail-lines h3,.quote-review h3,.quote-files h3{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0;color:#19382f;font-size:13px}
+.quote-detail-lines h3 span,.quote-review h3 span,.quote-files h3 span{color:#7d9189;font-size:10px;font-weight:600;white-space:nowrap}
+.quote-line-scroll{overflow-x:auto;border:1px solid #e6efe9;border-radius:10px}
+.quote-line-table{width:100%;min-width:680px;border-collapse:collapse}
+.quote-line-table th{padding:9px 12px;border-bottom:1px solid #dfeae3;background:#f3f8f4;color:#496554;font-size:10px;font-weight:750;letter-spacing:.4px;text-align:left;white-space:nowrap}
+.quote-line-table td{padding:10px 12px;border-top:1px solid #edf2ee;color:#19382f;font-size:12px;vertical-align:top;font-variant-numeric:tabular-nums}
+.quote-line-table tbody tr:nth-child(even){background:#fbfdfb}
+.quote-line-table tbody tr:first-child td{border-top:0}
+.quote-line-table td strong{display:block;font-weight:700}
+.quote-line-table td small{display:block;margin-top:3px;color:#7d9189;font-size:11px}
+.quote-line-table td small.quote-line-reason{color:#a4661f}
+.quote-line-table th:nth-child(1),.quote-line-table td:nth-child(1){width:38px;text-align:center}
+.quote-line-table th:nth-child(3),.quote-line-table td:nth-child(3){width:58px;text-align:center}
+.quote-line-table th:nth-child(n+4),.quote-line-table td:nth-child(n+4){text-align:right}
+.quote-detail-empty{margin:0;padding:14px;border:1px dashed #dce8e1;border-radius:10px;color:#82958b;font-size:12px;text-align:center}
+.quote-detail-totals{display:grid;justify-content:end;gap:5px;border-top:1px solid #edf2ee;padding-top:11px}
+.quote-detail-totals>div{display:grid;grid-template-columns:160px 132px;align-items:baseline;gap:14px}
+.quote-detail-totals dt{color:#4b6357;font-size:11px}
+.quote-detail-totals dd{margin:0;color:#19382f;font-size:12px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.quote-detail-totals .quote-detail-totals-grand dt{color:#19382f;font-size:12px;font-weight:700}
+.quote-detail-totals .quote-detail-totals-grand dd{color:#14795f;font-size:17px}
+.quote-detail-note{margin:0;padding:10px 12px;border-left:2px solid #d8e6de;background:#fbfdfb;border-radius:0 9px 9px 0;color:#4b6357;font-size:12px;line-height:1.6;white-space:pre-wrap}
+.quote-detail-note span{display:block;margin-bottom:4px;color:#61796c;font-size:10px;font-weight:750;letter-spacing:.6px;text-transform:uppercase}
+/* Viền trái phân biệt khối thao tác (màu chính) với khối chỉ đọc (trung tính). */
+.quote-files,.quote-review{display:flex;flex-direction:column;gap:10px;padding:14px;border:1px solid #dce8e1;border-left:3px solid #cfe6da;border-radius:12px;background:#fff}
+.quote-review{border-left-color:#14795f;background:#f7fbf8}
+.quote-review label{display:flex;flex-direction:column;gap:6px;color:#31584a;font-size:11px;font-weight:700}
+.quote-review-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.quote-ghn-fields{min-width:0;margin:0;padding:16px;border:1px solid #d8e6de;border-radius:12px}
+.quote-ghn-fields legend{padding:0 6px;color:#19644e;font-size:14px;font-weight:700}
+.quote-ghn-fields>p{font-size:13px;line-height:1.6;color:#587166}
+.quote-ghn-fields label{display:flex;flex-direction:column;gap:6px;min-width:0;font-size:12px}
+.quote-ghn-fields :is(input,select,textarea){box-sizing:border-box;width:100%;min-width:0;padding:10px;border:1px solid #d5e3db;border-radius:8px;background:#fff;font:inherit}
+.quote-ghn-fields [role=alert]{color:#a52e2e}
+.quote-ghn-package{margin-top:16px;padding-top:12px;border-top:1px solid #e6efe9}
+.quote-ghn-package>strong{display:block;margin-bottom:10px;font-size:13px;overflow-wrap:anywhere}
+.quote-ghn-fee{margin-top:18px;padding:14px;border:1px solid #cfe6da;border-radius:10px;background:#f3faf6}
+.quote-ghn-fee>span{display:block;font-size:13px;font-weight:700;color:#31584a}
+.quote-ghn-fee>strong{display:block;margin-top:6px;font-size:23px;color:#14795f;font-variant-numeric:tabular-nums}
+.quote-ghn-fee p{margin:7px 0;font-size:12px;line-height:1.6}
+.quote-ghn-fee small{display:block;color:#61796c;font-size:11px;line-height:1.6}
+.quote-ghn-fields .quote-review-grid{grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr))}
+.quote-review input,.quote-review select{width:100%;height:38px;padding:0 10px;border:1px solid #d8e6de;border-radius:9px;background:#fff;color:#19382f;font:inherit;font-size:12px;outline:0}
+.quote-review input:focus,.quote-review select:focus{border-color:#73bda5;box-shadow:0 0 0 3px rgba(61,184,148,.13)}
+.quote-review input:disabled,.quote-review select:disabled{background:#f3f7f4;color:#82958b}
+.quote-review textarea{min-height:78px;padding:10px;border:1px solid #d8e6de;border-radius:9px;background:#fff;color:#19382f;font:inherit;font-size:12px;line-height:1.5;resize:vertical}
+.quote-review textarea:focus{border-color:#73bda5;outline:2px solid #73bda5;outline-offset:1px}
+.quote-review textarea:disabled{background:#f3f7f4;color:#82958b}
+.quote-review-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:9px}
+.quote-review-actions button{padding:9px 16px;border:1px solid #d8e6de;border-radius:8px;background:#fff;color:#31584a;font-size:12px;font-weight:700}
+.quote-review-actions button:hover:not(:disabled){border-color:#73bda5;background:#f1f9f5}
+.quote-review-actions button.primary{border-color:#14795f;background:#14795f;color:#fff}
+.quote-review-actions button.primary:hover:not(:disabled){background:#0f6550;border-color:#0f6550}
+.quote-review-actions button.danger{border-color:#eec7c2;color:#9d2f24}
+.quote-review-actions button.danger:hover:not(:disabled){background:#fdf3f2;border-color:#e0a99f}
+.quote-review-actions button:disabled{opacity:.55;cursor:not-allowed}
+.quote-review>p{margin:0;color:#4b6357;font-size:12px;line-height:1.6;white-space:pre-wrap}
+.quote-review>small{color:#7d9189;font-size:11px}
+.quote-review-done{border-left-color:#cfe6da;background:#fbfdfb}
+.contract-debt-action{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:4px;padding-top:12px;border-top:1px solid #e1ece6}
+.contract-debt-action>span{display:flex;flex-direction:column;gap:2px;color:#6d8178;font-size:11px;font-weight:600}
+.contract-debt-action>span strong{color:#b45309;font-size:16px;line-height:1.3}
+.contract-order-history{padding:14px;border:1px solid #dce8e1;border-radius:12px;background:#fff}
+.contract-order-history h3{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0;color:#19382f;font-size:13px}
+.contract-order-history h3 span{color:#7d9189;font-size:10px;font-weight:600}
+.contract-order-history>p{margin:12px 0 0;color:#7d9189;font-size:12px}
+.contract-order-history ol{display:grid;gap:0;margin:12px 0 0;padding:0;list-style:none}
+.contract-order-history li{position:relative;margin-left:5px;padding:0 0 14px 18px;border-left:1px solid #dce8e1}
+.contract-order-history li:last-child{padding-bottom:0;border-left-color:transparent}
+.contract-order-history li::before{content:"";position:absolute;top:4px;left:-4px;width:7px;height:7px;border-radius:50%;background:#14795f;box-shadow:0 0 0 3px #e8f4ee}
+.contract-order-history li>div{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.contract-order-history li strong{color:#274b3e;font-size:12px}
+.contract-order-history time,.contract-order-history li small{color:#7d9189;font-size:10px}
+.contract-order-history li>p{margin:5px 0 0;color:#4b6357;font-size:11px;line-height:1.5;white-space:pre-wrap}
+.contract-payment-history{padding:14px;border:1px solid #dce8e1;border-radius:12px;background:#fff}
+.contract-payment-history h3{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0;color:#19382f;font-size:13px}
+.contract-payment-history h3 span{color:#7d9189;font-size:10px;font-weight:600}
+.contract-payment-history>p{margin:12px 0 0;color:#7d9189;font-size:12px}
+.contract-payment-history ol{display:grid;gap:8px;margin:12px 0 0;padding:0;list-style:none}
+.contract-payment-history li{padding:11px 12px;border:1px solid #e6efe9;border-radius:10px;background:#fbfdfb}
+.contract-payment-main{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.contract-payment-main>div:first-child{min-width:0}
+.contract-payment-main>div:last-child{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0}
+.contract-payment-main strong{display:block;color:#274b3e;font-size:12px}
+.contract-payment-main small{display:block;margin-top:4px;color:#7d9189;font-size:10px}
+.contract-payment-main b{color:#14795f;font-size:13px;font-variant-numeric:tabular-nums}
+.contract-payment-main time{margin-top:4px;color:#82958b;font-size:10px}
+.contract-payment-history li>p{margin:7px 0 0;padding-top:7px;border-top:1px solid #edf2ee;color:#4b6357;font-size:11px;line-height:1.5}
+.contract-debt-button{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:40px}
+.contract-debt-button svg{width:17px;height:17px}
+.quote-detail-modal footer{align-items:center;gap:9px}
+.quote-files-actions{display:flex;flex-wrap:wrap;gap:9px}
+.quote-files-actions button{padding:9px 16px;border:1px solid #d8e6de;border-radius:8px;background:#fff;color:#31584a;font-size:12px;font-weight:700}
+.quote-files-actions button:hover:not(:disabled){border-color:#73bda5;background:#f1f9f5}
+.quote-files-actions button.primary{border-color:#14795f;background:#14795f;color:#fff}
+.quote-files-actions button.primary:hover:not(:disabled){border-color:#0f6550;border-color:#0f6550}
+.quote-files-actions button:disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:700px){
+  .quote-detail-modal{padding:12px}
+  .quote-detail-modal>section{max-height:92vh}
+  .quote-detail-modal header{padding:16px}
+  .quote-detail-body{padding:14px 16px;gap:12px}
+  .quote-detail-groups{grid-template-columns:1fr}
+  .quote-detail-totals>div{grid-template-columns:1fr auto;gap:12px}
+  .quote-review-actions button,.quote-files-actions button{flex:1}
+  .contract-debt-action{align-items:stretch;flex-direction:column;gap:10px}
+  .contract-debt-button{width:100%}
+  .contract-payment-main{flex-direction:column}
+  .contract-payment-main>div:last-child{align-items:flex-start}
+  .quote-files h3{flex-direction:column;align-items:flex-start;gap:4px}
+  .quote-files h3 span{text-align:left;white-space:normal}
+}
+
+/* Customer acceptance inside quote conversion. */
+.quote-conversion-modal{background:rgba(9,35,28,.48);backdrop-filter:blur(4px)}
+.quote-conversion-modal>section{width:min(620px,100%);border:1px solid #dce8e1;border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(9,35,28,.22)}
+.quote-conversion-modal header{padding:22px 24px;background:#fff;border-bottom:1px solid #e6efe9;align-items:center}
+.quote-conversion-heading{display:flex;align-items:center;gap:13px;min-width:0}
+.quote-conversion-icon{display:grid;place-items:center;flex-shrink:0;width:46px;height:46px;border:1px solid #d5ebe2;border-radius:14px;background:#edf8f2;color:#14795f}
+.quote-conversion-icon svg{width:22px;height:22px}
+.quote-conversion-heading h2{margin:0;font-size:19px;font-weight:700;line-height:1.35;color:#19382f}
+.quote-conversion-heading p{margin:5px 0 0;font-size:12px;color:#61796c;overflow-wrap:anywhere}
+.quote-conversion-modal form{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.quote-conversion-modal .quote-detail-body{padding:24px;gap:20px;min-height:0}
+.quote-conversion-notice{padding:16px;border:1px solid #d9ebe2;border-radius:12px;background:#f3faf6}
+.quote-conversion-notice h3{margin:0 0 7px;font-size:14px;line-height:1.5;color:#19644e;font-weight:700}
+.quote-conversion-notice p{margin:0;font-size:13px;line-height:1.65;color:#587166}
+.quote-conversion-modal .quote-review-grid{grid-template-columns:1fr 1fr;gap:16px}
+.quote-conversion-modal label{display:flex;flex-direction:column;gap:8px;min-width:0;color:#31584a;font-size:13px;font-weight:600}
+.quote-conversion-modal label small{color:#7d9189;font-size:12px;font-weight:400}
+.quote-conversion-modal :is(input,select,textarea){box-sizing:border-box;width:100%;min-width:0;border:1px solid #d5e3db;border-radius:10px;background:#fff;padding:11px 12px;color:#19382f;font:inherit;font-size:13px;line-height:1.5;transition:border-color .15s,box-shadow .15s}
+.quote-conversion-modal :is(input,select){min-height:44px}
+.quote-conversion-modal textarea{min-height:96px;resize:vertical}
+.quote-conversion-modal :is(input,textarea)::placeholder{color:#8a9d93;font-weight:400}
+.quote-conversion-modal :is(input,select,textarea):focus-visible{outline:0;border-color:#309a78;box-shadow:0 0 0 3px rgba(48,154,120,.12)}
+.quote-conversion-modal :is(input,select,textarea):disabled{background:#f5f8f6;opacity:.7}
+.quote-conversion-modal footer{display:flex;justify-content:flex-end;padding:18px 24px;background:#f8fbf9;border-top:1px solid #e6efe9;flex-shrink:0;gap:10px}
+.quote-conversion-modal footer button{min-height:42px;border-radius:10px;white-space:normal;line-height:1.5}
+@media(max-width:600px){
+ .quote-conversion-modal{padding:12px}
+ .quote-conversion-modal header{padding:18px}
+ .quote-conversion-heading h2{font-size:17px}
+ .quote-conversion-icon{width:40px;height:40px;border-radius:11px}
+ .quote-conversion-modal .quote-detail-body{padding:18px;gap:16px}
+ .quote-conversion-modal .quote-review-grid{grid-template-columns:1fr}
+ .quote-conversion-modal footer{padding:16px 18px;flex-direction:column-reverse;align-items:stretch}
+ .quote-conversion-modal footer button{width:100%}
+}
+
+.quote-conversion-modal footer{flex-wrap:wrap}
+.quote-conversion-modal .quote-conversion-decline{border-color:#e7c5bf;color:#a43b30;background:#fff}
+.quote-conversion-modal .quote-conversion-decline:hover:not(:disabled){background:#fff4f1;border-color:#dba79e}
+.sales-accounting-read-only > .p-title .r-actions button,
+.sales-accounting-read-only .accounting-toolbar button:nth-child(n+2),
+.sales-accounting-read-only .commission-panel .p-panel-head button,
+.sales-accounting-read-only .commission-panel td button {
+  display: none;
+}

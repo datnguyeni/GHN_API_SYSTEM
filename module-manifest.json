@@ -1,0 +1,13 @@
+{
+  "key": "aicrm-shipping-ghn",
+  "version": "0.1.0",
+  "format": "source-integration-kit",
+  "runtime": "host-crm-spring-boot",
+  "standalone": false,
+  "backendPackage": "vn.aicrm.shipping",
+  "frontendEntry": "frontend/app/retail/shipping/ghn-shipping-workspace.tsx",
+  "apiPrefix": "/api/v1/retail/shipping/ghn",
+  "webhookPath": "/api/v1/webhooks/ghn/{tenantId}/{accountId}",
+  "hostRequirements": ["Java 21", "Spring Boot host", "PostgreSQL", "React host", "CRM retail schema", "CRM permission and transaction services"],
+  "note": "Delivery metadata only; the host module loader does not automatically install this manifest."
+}
