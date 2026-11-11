@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { address } from './contract.mjs';
+import { validateWebhookConfig } from './outbound-webhooks.mjs';
 
 export function validateConfig(config) {
   if (!Array.isArray(config.clients) || !config.clients.length || !Array.isArray(config.shops)) throw new Error('Config requires clients and shops');
@@ -13,6 +14,7 @@ export function validateConfig(config) {
   }
   for (const client of config.clients) {
     if (typeof client.id !== 'string' || !/^[a-zA-Z0-9_-]{1,80}$/.test(client.id) || typeof client.token !== 'string' || client.token.length < 32 || !Array.isArray(client.shops) || client.shops.some(code => !config.shops.some(s => s.code === code))) throw new Error('Invalid client or shop access; service token must have 32+ characters');
+    client.webhook = validateWebhookConfig(client.webhook);
   }
   return config;
 }

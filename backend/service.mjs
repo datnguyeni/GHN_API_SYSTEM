@@ -1,6 +1,8 @@
 import { createHash, randomUUID, timingSafeEqual } from 'node:crypto';
 import { ApiError, canonical, contract, text } from './contract.mjs';
 import { CarrierError } from './carrier.mjs';
+import { transaction } from './store.mjs';
+import { enqueueWebhook } from './outbound-webhooks.mjs';
 
 const digest = value => createHash('sha256').update(value).digest('hex');
 export function secretEqual(a, b) {
@@ -91,11 +93,16 @@ export class ShippingService {
     return { status: out.state === 'CREATED' ? 201 : ['UNKNOWN', 'CREATING'].includes(out.state) ? 202 : 422, body: out };
   }
   complete(id, result, status) {
-    const current = this.db.prepare('SELECT * FROM shipment WHERE id=?').get(id);
-    if (current.tracking && current.tracking !== result.trackingCode) throw new ApiError(409, 'TRACKING_MISMATCH');
-    this.db.prepare(`UPDATE shipment SET state='CREATED',tracking=?,result=?,error=NULL,
-      carrier_status=coalesce(carrier_status,?),updated_at=? WHERE id=?`)
-      .run(result.trackingCode, JSON.stringify({ ...(current.result ? JSON.parse(current.result) : {}), ...result }), status, new Date().toISOString(), id);
+    transaction(this.db, () => {
+      const current = this.db.prepare('SELECT * FROM shipment WHERE id=?').get(id);
+      if (current.tracking && current.tracking !== result.trackingCode) throw new ApiError(409, 'TRACKING_MISMATCH');
+      const now = new Date().toISOString();
+      this.db.prepare(`UPDATE shipment SET state='CREATED',tracking=?,result=?,error=NULL,
+        carrier_status=coalesce(carrier_status,?),updated_at=? WHERE id=?`)
+        .run(result.trackingCode, JSON.stringify({ ...(current.result ? JSON.parse(current.result) : {}), ...result }), status, now, id);
+      if (current.state !== 'CREATED') enqueueWebhook(this.db, this.config,
+        this.db.prepare('SELECT * FROM shipment WHERE id=?').get(id), 'shipment.created', 'created:' + id, now);
+    });
   }
   async reconcile(client, id) {
     const row = this.row(client, id), shop = this.shop(client, row.shop);
@@ -117,15 +124,15 @@ export class ShippingService {
     const row = this.db.prepare('SELECT * FROM shipment WHERE shop=? AND tracking=?').get(shop.code, tracking);
     if (!row) throw new ApiError(404, 'SHIPMENT_NOT_FOUND');
     const now = new Date().toISOString();
-    this.db.exec('BEGIN IMMEDIATE');
-    try {
+    transaction(this.db, () => {
       this.db.prepare('INSERT OR IGNORE INTO event VALUES(?,?,?,?,?,?,?)')
         .run(id, row.id, shop.code, tracking, status, time, now);
-      this.db.prepare(`UPDATE shipment SET carrier_status=?,carrier_time=?,updated_at=?
+      const updated = this.db.prepare(`UPDATE shipment SET carrier_status=?,carrier_time=?,updated_at=?
         WHERE id=? AND (carrier_time IS NULL OR carrier_time < ?)`)
         .run(status, time, now, row.id, time);
-      this.db.exec('COMMIT');
-    } catch (e) { this.db.exec('ROLLBACK'); throw e; }
+      if (updated.changes && row.carrier_status !== status) enqueueWebhook(this.db, this.config,
+        this.db.prepare('SELECT * FROM shipment WHERE id=?').get(row.id), 'shipment.status_changed', 'status:' + id, time);
+    });
     return { accepted: true };
   }
   async webhook(shopCode, secret, body) {

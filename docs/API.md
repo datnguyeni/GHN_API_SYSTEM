@@ -62,7 +62,7 @@ Không tạo lại khi UNKNOWN. Gọi `POST /internal/shipping/ghn/shipments/{id
 3. Khi cần tra cứu trực tiếp GHN, gọi POST reconcile rồi đọc kết quả trả về.
 4. CRM tự ánh xạ trạng thái GHN vào đơn bán. Service không truy cập database CRM.
 
-`GET /shipments?referenceCode=...` trả tối đa 200 yêu cầu gần nhất của bên gọi; chi tiết trả tối đa 100 sự kiện gần nhất. Chưa có phân trang hoặc webhook outbound sang CRM.
+`GET /shipments?referenceCode=...` trả tối đa 200 yêu cầu gần nhất của bên gọi; chi tiết trả tối đa 100 sự kiện gần nhất. Chưa có phân trang. Có thể cấu hình [webhook gửi chủ động sang CRM](OUTBOUND_WEBHOOKS.md) thay cho polling thường xuyên.
 
 ## Webhook GHN
 

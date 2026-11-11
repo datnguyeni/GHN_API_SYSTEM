@@ -7,6 +7,7 @@ import { GhnCarrier, MockCarrier, CarrierError } from './carrier.mjs';
 import { ShippingService } from './service.mjs';
 import { openStore } from './store.mjs';
 import { loadConfig } from './config.mjs';
+import { WebhookDispatcher, webhookInfo, deliveries, replayDelivery } from './outbound-webhooks.mjs';
 
 async function jsonBody(req) {
   if (!req.headers['content-type']?.toLowerCase().startsWith('application/json')) throw new ApiError(415, 'JSON_REQUIRED');
@@ -36,6 +37,10 @@ export function createApp(service, { staticDir = resolve('dist'), mode = 'live' 
         const route = path.slice(prefix.length);
         if (!path.startsWith(prefix + '/')) throw new ApiError(404, 'NOT_FOUND');
         if (route === '/shops' && req.method === 'GET') { reply(res, 200, service.shops(client)); return; }
+        if (route === '/webhook' && req.method === 'GET') { reply(res, 200, webhookInfo(client)); return; }
+        if (route === '/webhook/deliveries' && req.method === 'GET') { reply(res, 200, deliveries(service.db, client)); return; }
+        const replay = route.match(/^\/webhook\/deliveries\/([a-f0-9-]{36})\/retry$/);
+        if (replay && req.method === 'POST') { reply(res, 202, replayDelivery(service.db, client, replay[1])); return; }
         const location = route.match(/^\/shops\/([A-Za-z0-9_-]+)\/(provinces|wards)$/);
         if (location && req.method === 'GET') {
           const province = location[2] === 'wards' ? integer(Number(url.searchParams.get('provinceId')), 'provinceId', 1, Number.MAX_SAFE_INTEGER) : undefined;
@@ -79,7 +84,8 @@ if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1]
   if (!['live', 'mock'].includes(mode)) throw new Error('GHN_MODE must be live or mock');
   if (mode === 'live' && [...config.clients.map(c => c.token), ...config.shops.flatMap(s => [s.token, s.webhookSecret])].some(value => /^(demo-|REPLACE_)/.test(value))) throw new Error('Replace example credentials before running live; use npm run demo for mock mode');
   const db = openStore(process.env.GHN_DB_PATH ?? 'data/shipping.sqlite');
+  const dispatcher = new WebhookDispatcher(db, config);
   const server = createApp(new ShippingService(db, config, mode === 'mock' ? new MockCarrier() : new GhnCarrier()), { mode });
-  server.listen(Number(process.env.PORT ?? 8080), process.env.HOST ?? '127.0.0.1', () => console.log(`GHN service listening (${mode})`));
-  for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => server.close(() => { db.close(); process.exit(0); }));
+  server.listen(Number(process.env.PORT ?? 8080), process.env.HOST ?? '127.0.0.1', () => { dispatcher.start(); console.log(`GHN service listening (${mode})`); });
+  for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, () => server.close(async () => { await dispatcher.stop(); db.close(); process.exit(0); }));
 }

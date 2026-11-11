@@ -1,5 +1,5 @@
 {
-  "clients": [{ "id": "web-retail", "token": "demo-only-service-access-token-1234567890", "shops": ["HCM-01"] }],
+  "clients": [{ "id": "web-retail", "token": "demo-only-service-access-token-1234567890", "shops": ["HCM-01"], "webhook": { "enabled": false, "url": "", "secret": "" } }],
   "shops": [{
     "code": "HCM-01", "name": "Shop demo", "shopId": 123456, "environment": "STAGING",
     "token": "demo-not-a-real-ghn-token", "webhookSecret": "demo-only-webhook-secret-1234567890",

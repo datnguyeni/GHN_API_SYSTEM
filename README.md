@@ -2,7 +2,7 @@
 
 Dịch vụ vận chuyển độc lập: CRM/Web bán lẻ gọi API → Shipping Service → GHN. Không cần backend Java, database, schema, phân quyền hoặc module CRM. Backend mới dùng Node.js 24 và SQLite riêng; frontend React gọi API thật của service.
 
-Đã bỏ code đơn bán, phiếu xuất, tồn kho, khuyến mãi, công nợ, xác nhận báo giá và cập nhật đơn CRM. CRM tự quyết định COD, hàng gửi và đợt giao. Service chỉ xác thực bên gọi, kiểm tra dữ liệu vận chuyển, lấy cấu hình shop, tính phí, tạo/tra cứu vận đơn và nhận webhook GHN. Trạng thái gửi về CRM qua **API polling**; chưa có webhook đẩy chủ động sang CRM.
+Đã bỏ code đơn bán, phiếu xuất, tồn kho, khuyến mãi, công nợ, xác nhận báo giá và cập nhật đơn CRM. CRM tự quyết định COD, hàng gửi và đợt giao. Service chỉ xác thực bên gọi, kiểm tra dữ liệu vận chuyển, lấy cấu hình shop, tính phí, tạo/tra cứu vận đơn và nhận webhook GHN. Trạng thái gửi về CRM qua **webhook có chữ ký HMAC và hàng đợi SQLite**, hoặc API polling.
 
 ## Chạy thử không cần tài khoản GHN
 
@@ -55,13 +55,45 @@ Tất cả `/internal/shipping/ghn/*` cần `Authorization: Bearer <service-toke
 | GET | `/internal/shipping/ghn/shipments?referenceCode=WEB-123` | Tra cứu dữ liệu đã lưu của bên gọi |
 | GET | `/internal/shipping/ghn/shipments/{id}` | Chi tiết và lịch sử trạng thái đã lưu |
 | POST | `/internal/shipping/ghn/shipments/{id}/reconcile` | Tra cứu GHN để cập nhật dữ liệu đã lưu |
+| GET | `/internal/shipping/ghn/webhook` | Xem cấu hình outbound webhook, ẩn khóa ký |
+| GET | `/internal/shipping/ghn/webhook/deliveries` | Xem hàng đợi và kết quả gửi của bên gọi |
+| POST | `/internal/shipping/ghn/webhook/deliveries/{eventId}/retry` | Đưa sự kiện FAILED vào hàng đợi gửi lại |
 | POST | `/webhooks/ghn/{shopCode}` | GHN callback, cần X-GHN-Webhook-Secret |
 
 GET shipment đọc dữ liệu local. CRM gọi reconcile theo lịch khi cần cập nhật từ GHN, sau đó tự cập nhật đơn bán của mình. Bên gọi chỉ xem vận đơn của chính nó, dù hai bên được dùng chung một shop.
 
+## Cấu hình webhook gửi về CRM
+
+Trong `config/service.json`, bổ sung `webhook` vào client tương ứng:
+
+```json
+{
+  "id": "crm",
+  "token": "<service-token đã cấu hình>",
+  "shops": ["HCM-01"],
+  "webhook": {
+    "enabled": true,
+    "url": "https://crm.example.com/api/webhooks/shipping",
+    "secret": "<khóa ký ngẫu nhiên ít nhất 32 ký tự>",
+    "timeoutMs": 10000,
+    "maxAttempts": 12,
+    "baseDelayMs": 5000,
+    "maxDelayMs": 3600000
+  }
+}
+```
+
+Thay URL và secret bằng thông tin CRM của bạn, rồi khởi động lại service. File mẫu để `enabled: false` và URL/secret trống để bạn điền sau. Không gửi service token hoặc token GHN tới URL callback. URL và khóa ký được quản trị bằng file, không nhận từ payload tạo vận đơn. HTTP chỉ được phép với localhost/127.0.0.1/::1 để kiểm thử; URL khác cần HTTPS.
+
+Service gửi `shipment.created` khi đã có mã GHN và `shipment.status_changed` khi trạng thái mới được áp dụng từ webhook GHN hoặc reconcile. Mỗi sự kiện chỉ gửi cho client đã tạo vận đơn. Sự kiện được lưu cùng transaction cập nhật vận đơn; worker gửi ngoài request, nên CRM lỗi không làm thất bại thao tác tạo đơn GHN.
+
+CRM trả bất kỳ HTTP 2xx sau khi đã lưu bền vững sự kiện. Non-2xx, timeout hoặc lỗi kết nối được gửi lại với thời gian chờ tăng dần, tối đa 12 lần theo cấu hình; hết lượt chuyển FAILED. Xem hàng đợi và gửi lại sự kiện FAILED bằng giao diện hoặc API. [Contract, kiểm tra chữ ký và quy tắc chống trùng](docs/OUTBOUND_WEBHOOKS.md).
+
+Webhook mặc định tắt. Sự kiện phát sinh lúc tắt không được xếp hàng và không tự backfill khi bật; dùng API polling/reconcile để đồng bộ ban đầu. Sự kiện đã xếp hàng vẫn được giữ khi tắt và tiếp tục gửi nếu bật lại với cùng URL. Đổi URL không tự chuyển dữ liệu đang chờ tới địa chỉ mới: các sự kiện cũ chuyển FAILED/ENDPOINT_CHANGED, cần chủ động retry để dùng URL mới.
+
 ## Vận hành và giới hạn
 
-- Chạy **một tiến trình/replica** trên một database SQLite. Không dùng cluster hoặc nhiều container dùng chung file. Đổi quy mô cần chuyển store sang database hỗ trợ nhiều worker và thêm cơ chế lease.
+- Chạy **một tiến trình/replica** trên một database SQLite. Không dùng cluster hoặc nhiều container dùng chung file. Đổi quy mô cần chuyển store sang database hỗ trợ nhiều worker; lease hiện tại chỉ phục hồi các lần gửi webhook bị ngắt.
 - `Idempotency-Key` được lưu bền vững theo hệ thống gọi. Cùng khóa/cùng payload trả vận đơn cũ; khác payload trả 409. Cùng mã tham chiếu nhưng khóa mới được coi là một đợt giao khác.
 - Mỗi vận đơn dùng UUID nội bộ làm `client_order_code` GHN. Timeout hoặc khởi động lại giữa lúc tạo được đánh dấu UNKNOWN; chỉ lookup, không tự tạo lại. Không đổi khóa để xử lý UNKNOWN vì có thể tạo thêm vận đơn.
 - Webhook được khử trùng và áp dụng theo thời gian sự kiện. Webhook của mã vận đơn chưa biết trả 404 để bên gửi có thể gửi lại; có thể reconcile rồi gửi lại sự kiện. Không ghi nhận doanh thu, tồn kho hay công nợ từ webhook.
@@ -75,6 +107,6 @@ npm test
 npm run build
 ```
 
-Kiểm thử tự động dùng GHN giả lập: auth, phân quyền, idempotency đồng thời, timeout/restart, webhook, lưu bền vững và contract HTTP. Kết nối GHN thật cần kiểm thử Staging bằng tài khoản và mã địa chỉ thực tế trước khi triển khai.
+Kiểm thử tự động dùng GHN giả lập: auth, phân quyền, idempotency đồng thời, timeout/restart, webhook, lưu bền vững, outbound HMAC/retry/khôi phục hàng đợi và contract HTTP. Receiver HTTP local được dùng để kiểm tra chữ ký thực tế. Kết nối GHN và CRM thật cần kiểm thử Staging bằng tài khoản, URL và mã địa chỉ thực tế trước khi triển khai.
 
 Backend dùng [SQLite tích hợp trong Node.js](https://nodejs.org/docs/latest-v24.x/api/sqlite.html), không cần cài database CRM.

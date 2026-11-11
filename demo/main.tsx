@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './style.css';
 
 type Shipment = { id: string; referenceCode: string; shopCode: string; state: string; trackingCode: string | null; carrierStatus: string | null; error: string | null };
+type Delivery = { eventId: string; eventType: string; status: string; attempts: number; lastError: string | null; nextAttemptAt: string };
 const prefix = '/internal/shipping/ghn';
 const sample = {
   referenceCode: 'WEB-123', shopCode: 'HCM-01',
@@ -17,6 +18,8 @@ function App() {
   const [busy, setBusy] = useState(false);
   const [shipments, setShipments] = useState<Shipment[]>([]);
   const [shops, setShops] = useState<unknown[]>([]);
+  const [webhook, setWebhook] = useState<unknown>(null);
+  const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [body, setBody] = useState(JSON.stringify(sample, null, 2));
   const [key, setKey] = useState<string>(crypto.randomUUID());
   const [detail, setDetail] = useState<unknown>(null);
@@ -37,8 +40,11 @@ function App() {
     finally { setBusy(false); }
   }
   async function refresh() {
-    const [list, config] = await Promise.all([request('/shipments' + (filter ? '?referenceCode=' + encodeURIComponent(filter) : '')), request('/shops')]);
-    setShipments(list); setShops(config);
+    const [list, config, webhookConfig, queue] = await Promise.all([
+      request('/shipments' + (filter ? '?referenceCode=' + encodeURIComponent(filter) : '')),
+      request('/shops'), request('/webhook'), request('/webhook/deliveries')
+    ]);
+    setShipments(list); setShops(config); setWebhook(webhookConfig); setDeliveries(queue);
   }
   async function send(preview: boolean) {
     const result = await request(preview ? '/preview' : '/create-order', JSON.parse(body), preview ? undefined : key);
@@ -50,7 +56,7 @@ function App() {
     <header><div><strong>GHN Shipping</strong><p>Dịch vụ vận chuyển độc lập</p></div><span className={'badge ' + mode}>{mode === 'mock' ? 'DEMO · Vận đơn giả lập' : mode === 'live' ? 'Kết nối GHN thật' : 'Chưa kết nối backend'}</span></header>
     <main>
       <section><h2>Kết nối hệ thống</h2><p>Nhập service access token để xem các shop và yêu cầu vận chuyển được cấp quyền. Token chỉ giữ trong bộ nhớ của trang.</p>
-        <label>Service access token<input type="password" autoComplete="off" value={token} disabled={busy} onChange={e => { setToken(e.target.value); setShipments([]); setShops([]); setDetail(null); setMessage(''); }} /></label>
+        <label>Service access token<input type="password" autoComplete="off" value={token} disabled={busy} onChange={e => { setToken(e.target.value); setShipments([]); setShops([]); setWebhook(null); setDeliveries([]); setDetail(null); setMessage(''); }} /></label>
         <button disabled={busy || !token} onClick={() => run(refresh)}>Kết nối / tải lại</button>
         {shops.length > 0 && <details><summary>Shop được cấp quyền ({shops.length})</summary><pre>{JSON.stringify(shops, null, 2)}</pre></details>}
       </section>
@@ -70,6 +76,19 @@ function App() {
         </article>)}</div>
         {detail !== null && <><h3>Kết quả / lịch sử</h3><pre>{JSON.stringify(detail, null, 2)}</pre></>}
       </section></div>
+      <section><h2>Webhook gửi về hệ thống của bạn</h2>
+        <p>Cấu hình URL nhận và khóa ký tại clients[].webhook trong file cấu hình dịch vụ, sau đó khởi động lại backend. Trang này hiển thị cấu hình và kết quả gửi; khóa bí mật được ẩn.</p>
+        {webhook !== null && <details><summary>Cấu hình webhook hiện tại</summary><pre>{JSON.stringify(webhook, null, 2)}</pre></details>}
+        <button disabled={busy || !token} onClick={() => run(refresh)}>Tải lại trạng thái gửi</button>
+        {deliveries.length === 0 && <p>Chưa có sự kiện trong hàng đợi webhook.</p>}
+        {deliveries.map(d => <article key={d.eventId}><strong>{d.eventType}</strong><span className="badge">{d.status}</span>
+          <p>{d.eventId} · Đã thử {d.attempts} lần{d.lastError ? ' · ' + d.lastError : ''}</p>
+          {d.status === 'PENDING' && <p>Lần gửi tiếp theo: {d.nextAttemptAt}</p>}
+          {d.status === 'FAILED' && <button disabled={busy} onClick={() => run(async () => {
+            await request('/webhook/deliveries/' + d.eventId + '/retry', {}); await refresh(); setMessage('Đã đưa sự kiện vào hàng đợi gửi lại.');
+          })}>Gửi lại sự kiện</button>}
+        </article>)}
+      </section>
     </main>
   </>;
 }

@@ -1,5 +1,16 @@
 {
-  "clients": [{ "id": "crm", "token": "REPLACE_WITH_RANDOM_SERVICE_TOKEN_32_CHARS_MIN", "shops": ["HCM-01"] }],
+  "clients": [{
+    "id": "crm", "token": "REPLACE_WITH_RANDOM_SERVICE_TOKEN_32_CHARS_MIN", "shops": ["HCM-01"],
+    "webhook": {
+      "enabled": false,
+      "url": "",
+      "secret": "",
+      "timeoutMs": 10000,
+      "maxAttempts": 12,
+      "baseDelayMs": 5000,
+      "maxDelayMs": 3600000
+    }
+  }],
   "shops": [{
     "code": "HCM-01", "name": "Shop HCM", "shopId": 123456, "environment": "STAGING",
     "token": "REPLACE_WITH_GHN_TOKEN", "webhookSecret": "REPLACE_WITH_RANDOM_WEBHOOK_SECRET_32_CHARS_MIN",
