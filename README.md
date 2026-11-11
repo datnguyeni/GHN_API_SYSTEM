@@ -46,12 +46,6 @@ Hoặc chạy `docker compose up --build` sau khi tạo cấu hình. Docker buil
 
 Để phát triển: `mvn -f backend/pom.xml spring-boot:run -Dspring-boot.run.profiles=demo` (PowerShell: đặt đối số `-Dspring-boot.run.profiles=demo` trong dấu nháy kép), hoặc `npm run demo` là lệnh tắt gọi Maven. `npm start` cũng gọi Maven cho profile mặc định. Chạy `npm run dev` ở terminal khác để sửa giao diện; Next.js chạy tại `http://127.0.0.1:3000`, proxy API đến `127.0.0.1:8080`. Có thể đặt `BACKEND_URL` khi backend chạy ở địa chỉ khác.
 
-## Nâng cấp từ backend Node.js trước đó
-
-1. Dừng backend Node trước khi mở cùng database bằng Spring Boot; sao lưu file SQLite và các file WAL/SHM còn đi kèm.
-2. Giữ nguyên `config/service.json`, các client id/token, shopCode và `GHN_DB_PATH`. Spring Boot mặc định đọc cùng đường dẫn `data/shipping.sqlite`; profile demo dùng `data/demo.sqlite`.
-3. Build frontend rồi Maven package và chạy JAR như trên. API, cấu hình webhook, schema SQLite và fingerprint Idempotency-Key tương thích với bản Node; không cần tạo lại database. Các yêu cầu CREATING bị gián đoạn được chuyển UNKNOWN để lookup thay vì tạo lại.
-4. Hàng đợi outbound giữ nguyên eventId, sequence và bytes payload đã lưu; các lượt IN_FLIGHT tiếp tục sau khi lease hết hạn. Không chạy đồng thời bản Node và Java trên cùng database.
 
 ## API giữa CRM và Shipping
 
