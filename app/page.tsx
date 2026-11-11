@@ -1,6 +1,6 @@
+'use client';
+
 import { useEffect, useState } from 'react';
-import { createRoot } from 'react-dom/client';
-import './style.css';
 
 type Shipment = { id: string; referenceCode: string; shopCode: string; state: string; trackingCode: string | null; carrierStatus: string | null; error: string | null };
 type Delivery = { eventId: string; eventType: string; status: string; attempts: number; lastError: string | null; nextAttemptAt: string };
@@ -11,7 +11,7 @@ const sample = {
   weight: 1000, length: 30, width: 20, height: 10, codAmount: 250000, insuranceValue: 250000, serviceTypeId: 2, paymentTypeId: 1,
   items: [{ name: 'Áo thun', quantity: 1 }]
 };
-function App() {
+export default function Page() {
   const [token, setToken] = useState('');
   const [mode, setMode] = useState('');
   const [message, setMessage] = useState('');
@@ -21,9 +21,10 @@ function App() {
   const [webhook, setWebhook] = useState<unknown>(null);
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [body, setBody] = useState(JSON.stringify(sample, null, 2));
-  const [key, setKey] = useState<string>(crypto.randomUUID());
+  const [key, setKey] = useState<string>('');
   const [detail, setDetail] = useState<unknown>(null);
   const [filter, setFilter] = useState('');
+  useEffect(() => { setKey(crypto.randomUUID()); }, []);
   useEffect(() => { fetch('/health').then(r => r.json()).then(h => setMode(h.mode)).catch(() => setMode('offline')); }, []);
   async function request(path: string, data?: unknown, idempotencyKey?: string) {
     const response = await fetch(prefix + path, {
@@ -92,4 +93,4 @@ function App() {
     </main>
   </>;
 }
-createRoot(document.getElementById('root')!).render(<App />);
+

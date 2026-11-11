@@ -84,4 +84,4 @@ Endpoint yêu cầu header bí mật từ tầng tiếp nhận callback đã xá
 
 ## Cấu hình
 
-Backend là Java 21 / Spring Boot. `GHN_CONFIG_FILE`: mặc định `config/service.json` (phải tồn tại). `GHN_DB_PATH`: mặc định `data/shipping.sqlite`. `PORT`: 8080. `HOST`: 127.0.0.1. `GHN_MODE`: live (mặc định) hoặc mock (chỉ demo). Profile `demo` chọn mode mock, file `config/demo.json` và database `data/demo.sqlite`; không dùng profile này cho GHN thật. `GHN_STATIC_DIR` mặc định `dist`, có fallback tới giao diện đóng gói trong JAR. Không có kết nối hoặc fallback tới CRM.
+Backend là Java 21 / Spring Boot. `GHN_CONFIG_FILE`: mặc định `config/service.json` (phải tồn tại). `GHN_DB_PATH`: mặc định `data/shipping.sqlite`. `PORT`: 8080. `HOST`: 127.0.0.1. `GHN_MODE`: live (mặc định) hoặc mock (chỉ demo). Profile `demo` chọn mode mock, file `config/demo.json` và database `data/demo.sqlite`; không dùng profile này cho GHN thật. `GHN_STATIC_DIR` mặc định `out`, có fallback tới giao diện đóng gói trong JAR. Không có kết nối hoặc fallback tới CRM.

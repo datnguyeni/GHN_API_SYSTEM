@@ -1,6 +1,6 @@
 # GHN Shipping Service
 
-Dịch vụ vận chuyển độc lập: CRM/Web bán lẻ gọi API → Shipping Service → GHN. Backend dùng **Java 21 / Spring Boot 3.5**, JDBC và SQLite riêng, không phụ thuộc backend, schema, phân quyền hoặc module CRM. Frontend React/TypeScript gọi API của Spring Boot; không còn backend Node.js.
+Dịch vụ vận chuyển độc lập: CRM/Web bán lẻ gọi API → Shipping Service → GHN. Backend dùng **Java 21 / Spring Boot 3.5**, JDBC và SQLite riêng, không phụ thuộc backend, schema, phân quyền hoặc module CRM. Frontend **Next.js 16 App Router / React / TypeScript** gọi API của Spring Boot; không còn backend Node.js.
 
 Đã bỏ code đơn bán, phiếu xuất, tồn kho, khuyến mãi, công nợ, xác nhận báo giá và cập nhật đơn CRM. CRM tự quyết định COD, hàng gửi và đợt giao. Service chỉ xác thực bên gọi, kiểm tra dữ liệu vận chuyển, lấy cấu hình shop, tính phí, tạo/tra cứu vận đơn và nhận webhook GHN. Trạng thái gửi về CRM qua **webhook có chữ ký HMAC và hàng đợi SQLite**, hoặc API polling.
 
@@ -40,11 +40,11 @@ $env:GHN_CONFIG_FILE = 'config/service.json'
 java -jar backend/target/shipping-service-1.1.0.jar
 ```
 
-JAR chứa giao diện đã build, chạy bằng Java và không cần Node.js trên máy chủ. Có thể chỉ build backend bằng Maven để dùng API mà không build frontend.
+`npm run build` xuất giao diện Next.js tĩnh vào `out/`; Maven đóng gói thư mục này vào JAR. JAR chứa giao diện đã build, chạy bằng Java và không cần Node.js trên máy chủ. Có thể chỉ build backend bằng Maven để dùng API mà không build frontend.
 
 Hoặc chạy `docker compose up --build` sau khi tạo cấu hình. Docker build frontend bằng Node và backend bằng Maven; container chạy cuối chỉ có Java JRE. Database được lưu trong volume `shipping-data`; file cấu hình mount chỉ đọc. Spring Boot mặc định bind `127.0.0.1:8080`; Docker bind trong container và chỉ publish loopback trên host. Khi cho hệ thống khác gọi, cấu hình reverse proxy HTTPS và quyền truy cập mạng phù hợp.
 
-Để phát triển: `mvn -f backend/pom.xml spring-boot:run -Dspring-boot.run.profiles=demo` (PowerShell: đặt đối số `-Dspring-boot.run.profiles=demo` trong dấu nháy kép), hoặc `npm run demo` là lệnh tắt gọi Maven. `npm start` cũng gọi Maven cho profile mặc định. Chạy `npm run dev` ở terminal khác để sửa giao diện; Vite proxy API đến `127.0.0.1:8080`.
+Để phát triển: `mvn -f backend/pom.xml spring-boot:run -Dspring-boot.run.profiles=demo` (PowerShell: đặt đối số `-Dspring-boot.run.profiles=demo` trong dấu nháy kép), hoặc `npm run demo` là lệnh tắt gọi Maven. `npm start` cũng gọi Maven cho profile mặc định. Chạy `npm run dev` ở terminal khác để sửa giao diện; Next.js chạy tại `http://127.0.0.1:3000`, proxy API đến `127.0.0.1:8080`. Có thể đặt `BACKEND_URL` khi backend chạy ở địa chỉ khác.
 
 ## Nâng cấp từ backend Node.js trước đó
 

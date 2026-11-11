@@ -7,3 +7,7 @@ config/service.json
 .env*
 *.log
 **/target
+
+out/
+.next/
+*.tsbuildinfo

@@ -2,14 +2,14 @@ FROM node:22-alpine AS frontend
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
-COPY tsconfig.json vite.config.ts index.html ./
-COPY demo ./demo
+COPY tsconfig.json next.config.mjs ./
+COPY app ./app
 RUN npm run build
 
 FROM maven:3.9.11-eclipse-temurin-21 AS backend
 WORKDIR /build
 COPY backend ./backend
-COPY --from=frontend /app/dist ./dist
+COPY --from=frontend /app/out ./out
 RUN mvn -B -f backend/pom.xml -DskipTests package
 
 FROM eclipse-temurin:21-jre-alpine

@@ -4,14 +4,25 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview --host 127.0.0.1",
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build",
     "start": "mvn -f backend/pom.xml spring-boot:run",
     "demo": "mvn -f backend/pom.xml spring-boot:run -Dspring-boot.run.profiles=demo",
-    "test": "mvn -f backend/pom.xml test"
+    "test": "mvn -f backend/pom.xml test",
+    "typecheck": "tsc --noEmit"
   },
-  "engines": { "node": ">=22.18.0" },
-  "dependencies": { "react": "19.2.0", "react-dom": "19.2.0" },
-  "devDependencies": { "@types/react": "19.2.2", "@types/react-dom": "19.2.2", "typescript": "5.9.3", "vite": "7.2.2" }
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "dependencies": {
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "next": "16.4.6"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "typescript": "5.9.3",
+    "@types/node": "^22.0.0"
+  }
 }

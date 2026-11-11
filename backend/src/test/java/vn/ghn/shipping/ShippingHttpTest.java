@@ -8,7 +8,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT,properties={"shipping.mode=mock","shipping.config-file=../config/demo.json","shipping.db-path=:memory:","shipping.static-dir=../dist"})
+@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT,properties={"shipping.mode=mock","shipping.config-file=../config/demo.json","shipping.db-path=:memory:","shipping.static-dir=../out"})
 class ShippingHttpTest {
   @Autowired TestRestTemplate http;
   @Autowired ObjectMapper json;

@@ -6,5 +6,6 @@
   "entry": "backend/target/shipping-service-1.1.0.jar",
   "apiPrefix": "/internal/shipping/ghn",
   "webhookPath": "/webhooks/ghn/{shopCode}",
-  "database": "SQLite (owned by shipping service)"
+  "database": "SQLite (owned by shipping service)",
+  "frontend": "nextjs-16-app-router-static-export"
 }

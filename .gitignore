@@ -10,3 +10,7 @@ target/
 data/
 config/service.json
 *.sqlite*
+
+out/
+*.tsbuildinfo
+next-env.d.ts
