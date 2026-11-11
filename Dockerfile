@@ -1,4 +1,4 @@
-FROM node:24-alpine AS build
+FROM node:22-alpine AS frontend
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -6,14 +6,18 @@ COPY tsconfig.json vite.config.ts index.html ./
 COPY demo ./demo
 RUN npm run build
 
-FROM node:24-alpine
-ENV NODE_ENV=production HOST=0.0.0.0 PORT=8080 GHN_DB_PATH=/app/data/shipping.sqlite GHN_CONFIG_FILE=/app/config/service.json
-WORKDIR /app
-COPY --from=build /app/dist ./dist
+FROM maven:3.9.11-eclipse-temurin-21 AS backend
+WORKDIR /build
 COPY backend ./backend
-COPY package.json ./
-RUN mkdir -p /app/data /app/config && chown -R node:node /app
-USER node
+COPY --from=frontend /app/dist ./dist
+RUN mvn -B -f backend/pom.xml -DskipTests package
+
+FROM eclipse-temurin:21-jre-alpine
+ENV HOST=0.0.0.0 PORT=8080 GHN_DB_PATH=/app/data/shipping.sqlite GHN_CONFIG_FILE=/app/config/service.json
+WORKDIR /app
+RUN addgroup -S shipping && adduser -S shipping -G shipping && mkdir -p /app/data /app/config && chown -R shipping:shipping /app
+COPY --from=backend --chown=shipping:shipping /build/backend/target/shipping-service-1.1.0.jar /app/shipping-service.jar
+USER shipping
 EXPOSE 8080
-HEALTHCHECK --interval=30s --timeout=3s CMD node -e "fetch('http://127.0.0.1:8080/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
-CMD ["node", "backend/server.mjs"]
+HEALTHCHECK --interval=30s --timeout=3s CMD wget -q -O /dev/null http://127.0.0.1:8080/health || exit 1
+ENTRYPOINT ["java", "-jar", "/app/shipping-service.jar"]

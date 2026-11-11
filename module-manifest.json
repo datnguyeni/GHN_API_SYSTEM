@@ -1,9 +1,9 @@
 {
   "key": "ghn-shipping-service",
-  "version": "1.0.0",
-  "runtime": "node-24",
+  "version": "1.1.0",
+  "runtime": "java-21-spring-boot",
   "standalone": true,
-  "entry": "backend/server.mjs",
+  "entry": "backend/target/shipping-service-1.1.0.jar",
   "apiPrefix": "/internal/shipping/ghn",
   "webhookPath": "/webhooks/ghn/{shopCode}",
   "database": "SQLite (owned by shipping service)"

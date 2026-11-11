@@ -6,3 +6,4 @@ data
 config/service.json
 .env*
 *.log
+**/target

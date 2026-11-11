@@ -1,0 +1,54 @@
+{
+  "input": {
+    "referenceCode": "WEB-123",
+    "shopCode": "HCM-01",
+    "recipient": {
+      "name": "Nguyễn Văn An",
+      "phone": "0901234567",
+      "address": "123 Nguyễn Huệ",
+      "provinceId": 1000001,
+      "wardId": 2000001
+    },
+    "weight": 1000,
+    "length": 30,
+    "width": 20,
+    "height": 10,
+    "codAmount": 250000,
+    "insuranceValue": 250000,
+    "items": [
+      {
+        "name": "Áo thun",
+        "quantity": 1
+      }
+    ]
+  },
+  "normalized": {
+    "referenceCode": "WEB-123",
+    "shopCode": "HCM-01",
+    "recipient": {
+      "name": "Nguyễn Văn An",
+      "phone": "0901234567",
+      "address": "123 Nguyễn Huệ",
+      "provinceId": 1000001,
+      "wardId": 2000001
+    },
+    "weight": 1000,
+    "length": 30,
+    "width": 20,
+    "height": 10,
+    "codAmount": 250000,
+    "insuranceValue": 250000,
+    "serviceTypeId": 2,
+    "paymentTypeId": 1,
+    "requiredNote": "CHOXEMHANGKHONGTHU",
+    "note": "",
+    "items": [
+      {
+        "name": "Áo thun",
+        "quantity": 1
+      }
+    ]
+  },
+  "canonical": "{\"codAmount\":250000,\"height\":10,\"insuranceValue\":250000,\"items\":[{\"name\":\"Áo thun\",\"quantity\":1}],\"length\":30,\"note\":\"\",\"paymentTypeId\":1,\"recipient\":{\"address\":\"123 Nguyễn Huệ\",\"name\":\"Nguyễn Văn An\",\"phone\":\"0901234567\",\"provinceId\":1000001,\"wardId\":2000001},\"referenceCode\":\"WEB-123\",\"requiredNote\":\"CHOXEMHANGKHONGTHU\",\"serviceTypeId\":2,\"shopCode\":\"HCM-01\",\"weight\":1000,\"width\":20}",
+  "fingerprint": "0b2b4e7c14ae511621312022b485ce072f1733dc0febddce2d44325e4223d8e0"
+}

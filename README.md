@@ -1,17 +1,18 @@
 # GHN Shipping Service
 
-Dịch vụ vận chuyển độc lập: CRM/Web bán lẻ gọi API → Shipping Service → GHN. Không cần backend Java, database, schema, phân quyền hoặc module CRM. Backend mới dùng Node.js 24 và SQLite riêng; frontend React gọi API thật của service.
+Dịch vụ vận chuyển độc lập: CRM/Web bán lẻ gọi API → Shipping Service → GHN. Backend dùng **Java 21 / Spring Boot 3.5**, JDBC và SQLite riêng, không phụ thuộc backend, schema, phân quyền hoặc module CRM. Frontend React/TypeScript gọi API của Spring Boot; không còn backend Node.js.
 
 Đã bỏ code đơn bán, phiếu xuất, tồn kho, khuyến mãi, công nợ, xác nhận báo giá và cập nhật đơn CRM. CRM tự quyết định COD, hàng gửi và đợt giao. Service chỉ xác thực bên gọi, kiểm tra dữ liệu vận chuyển, lấy cấu hình shop, tính phí, tạo/tra cứu vận đơn và nhận webhook GHN. Trạng thái gửi về CRM qua **webhook có chữ ký HMAC và hàng đợi SQLite**, hoặc API polling.
 
 ## Chạy thử không cần tài khoản GHN
 
-Yêu cầu Node.js 24+.
+Yêu cầu Java 21+, Maven 3.6.3+; Node.js 22.18+ chỉ để build/sửa giao diện. Các lệnh dưới chạy từ thư mục gốc repo.
 
 ```powershell
 npm ci
 npm run build
-npm run demo
+mvn -f backend/pom.xml clean package
+java -jar backend/target/shipping-service-1.1.0.jar --spring.profiles.active=demo
 ```
 
 Mở http://127.0.0.1:8080. Nhập service token mẫu `demo-only-service-access-token-1234567890`, bấm Kết nối rồi Tính phí/Tạo vận đơn. Chế độ demo dùng adapter giả lập, không gọi GHN; dữ liệu được lưu tại `data/demo.sqlite` và tồn tại sau khi khởi động lại. Payload mẫu chỉ có mã địa chỉ demo.
@@ -25,20 +26,32 @@ Mở http://127.0.0.1:8080. Nhập service token mẫu `demo-only-service-access
 Tạo khóa ngẫu nhiên:
 
 ```powershell
-node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
+$webhookKey = New-Object byte[] 32
+$generator = [System.Security.Cryptography.RandomNumberGenerator]::Create()
+$generator.GetBytes($webhookKey)
+$generator.Dispose()
+[BitConverter]::ToString($webhookKey).Replace('-', '').ToLowerInvariant()
 ```
 
 Chạy local:
 
 ```powershell
 $env:GHN_CONFIG_FILE = 'config/service.json'
-npm run build
-npm start
+java -jar backend/target/shipping-service-1.1.0.jar
 ```
 
-Hoặc chạy `docker compose up --build` sau khi tạo cấu hình. Docker lưu database trong volume `shipping-data`; file cấu hình mount chỉ đọc. Node mặc định bind `127.0.0.1:8080`; Docker bind trong container và chỉ publish loopback trên host. Khi cho hệ thống khác gọi, cấu hình reverse proxy HTTPS và quyền truy cập mạng phù hợp.
+JAR chứa giao diện đã build, chạy bằng Java và không cần Node.js trên máy chủ. Có thể chỉ build backend bằng Maven để dùng API mà không build frontend.
 
-Để sửa giao diện: chạy backend ở một terminal và `npm run dev` ở terminal khác. Vite proxy API đến `127.0.0.1:8080`.
+Hoặc chạy `docker compose up --build` sau khi tạo cấu hình. Docker build frontend bằng Node và backend bằng Maven; container chạy cuối chỉ có Java JRE. Database được lưu trong volume `shipping-data`; file cấu hình mount chỉ đọc. Spring Boot mặc định bind `127.0.0.1:8080`; Docker bind trong container và chỉ publish loopback trên host. Khi cho hệ thống khác gọi, cấu hình reverse proxy HTTPS và quyền truy cập mạng phù hợp.
+
+Để phát triển: `mvn -f backend/pom.xml spring-boot:run -Dspring-boot.run.profiles=demo` (PowerShell: đặt đối số `-Dspring-boot.run.profiles=demo` trong dấu nháy kép), hoặc `npm run demo` là lệnh tắt gọi Maven. `npm start` cũng gọi Maven cho profile mặc định. Chạy `npm run dev` ở terminal khác để sửa giao diện; Vite proxy API đến `127.0.0.1:8080`.
+
+## Nâng cấp từ backend Node.js trước đó
+
+1. Dừng backend Node trước khi mở cùng database bằng Spring Boot; sao lưu file SQLite và các file WAL/SHM còn đi kèm.
+2. Giữ nguyên `config/service.json`, các client id/token, shopCode và `GHN_DB_PATH`. Spring Boot mặc định đọc cùng đường dẫn `data/shipping.sqlite`; profile demo dùng `data/demo.sqlite`.
+3. Build frontend rồi Maven package và chạy JAR như trên. API, cấu hình webhook, schema SQLite và fingerprint Idempotency-Key tương thích với bản Node; không cần tạo lại database. Các yêu cầu CREATING bị gián đoạn được chuyển UNKNOWN để lookup thay vì tạo lại.
+4. Hàng đợi outbound giữ nguyên eventId, sequence và bytes payload đã lưu; các lượt IN_FLIGHT tiếp tục sau khi lease hết hạn. Không chạy đồng thời bản Node và Java trên cùng database.
 
 ## API giữa CRM và Shipping
 
@@ -103,10 +116,10 @@ Webhook mặc định tắt. Sự kiện phát sinh lúc tắt không được x
 ## Kiểm tra
 
 ```powershell
-npm test
 npm run build
+mvn -f backend/pom.xml clean verify
 ```
 
 Kiểm thử tự động dùng GHN giả lập: auth, phân quyền, idempotency đồng thời, timeout/restart, webhook, lưu bền vững, outbound HMAC/retry/khôi phục hàng đợi và contract HTTP. Receiver HTTP local được dùng để kiểm tra chữ ký thực tế. Kết nối GHN và CRM thật cần kiểm thử Staging bằng tài khoản, URL và mã địa chỉ thực tế trước khi triển khai.
 
-Backend dùng [SQLite tích hợp trong Node.js](https://nodejs.org/docs/latest-v24.x/api/sqlite.html), không cần cài database CRM.
+Kiểm thử JUnit còn xác nhận fingerprint và Idempotency-Key tương thích với fixture được xuất từ backend Node trước đây. `npm test` là lệnh tắt gọi Maven test. Backend dùng Spring JDBC và SQLite JDBC, không cần cài database CRM.

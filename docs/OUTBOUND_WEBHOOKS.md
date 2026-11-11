@@ -44,22 +44,35 @@ Chữ ký bằng HMAC-SHA256 với khóa `webhook.secret`, trên đúng bytes UT
 <X-GHN-Service-Timestamp>.<raw HTTP body>
 ```
 
-Khóa HMAC là chuỗi cấu hình được dùng nguyên dạng UTF-8; nếu tạo khóa hex bằng randomBytes, không giải mã hex trước khi ký/xác minh. Signature có prefix `sha256=`. Timestamp thay đổi mỗi lần gửi; eventId và bytes body giữ nguyên.
+Khóa HMAC là chuỗi cấu hình được dùng nguyên dạng UTF-8; nếu tạo khóa dạng hex, không giải mã hex trước khi ký/xác minh. Signature có prefix `sha256=`. Timestamp thay đổi mỗi lần gửi; eventId và bytes body giữ nguyên.
 
-Ví dụ Node.js, gọi trước khi parse JSON:
+Ví dụ Java, dùng raw body trước khi parse JSON:
 
-```js
-import { createHmac, timingSafeEqual } from 'node:crypto';
+```java
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.time.Instant;
+import java.util.HexFormat;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
-function verify(secret, timestamp, signature, rawBody) {
-  if (typeof timestamp !== 'string' || !/^[0-9]{10,}$/.test(timestamp)) return false;
-  if (Math.abs(Date.now() / 1000 - Number(timestamp)) > 300) return false;
-  if (typeof signature !== 'string' || !/^sha256=[a-f0-9]{64}$/.test(signature)) return false;
-  const expected = 'sha256=' + createHmac('sha256', secret)
-    .update(timestamp + '.').update(rawBody).digest('hex');
-  return timingSafeEqual(Buffer.from(expected), Buffer.from(signature));
+static boolean verify(String secret, String timestamp, String signature, byte[] rawBody) {
+  if (timestamp == null || !timestamp.matches("[0-9]{10,}") || signature == null
+      || !signature.matches("sha256=[a-f0-9]{64}")) return false;
+  try {
+    long age = Math.subtractExact(Instant.now().getEpochSecond(), Long.parseLong(timestamp));
+    if (age < -300 || age > 300) return false;
+    Mac mac = Mac.getInstance("HmacSHA256");
+    mac.init(new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256"));
+    mac.update((timestamp + ".").getBytes(StandardCharsets.UTF_8));
+    String expected = "sha256=" + HexFormat.of().formatHex(mac.doFinal(rawBody));
+    return MessageDigest.isEqual(expected.getBytes(StandardCharsets.US_ASCII),
+        signature.getBytes(StandardCharsets.US_ASCII));
+  } catch (Exception invalid) { return false; }
 }
 ```
+
+Trong Spring MVC, endpoint CRM có thể nhận `@RequestBody byte[] rawBody` và các header bằng `@RequestHeader`. Xác minh trước, rồi dùng ObjectMapper parse body; không ký lại trên JSON đã format.
 
 CRM cần:
 
@@ -77,7 +90,7 @@ Webhook bảo đảm **at least once**, không phải exactly once. Nếu CRM đ
 
 Worker kiểm tra hàng đợi khoảng mỗi giây, gửi tuần tự. Các sự kiện của cùng shipment chờ sự kiện trước nhận 2xx hoặc chuyển FAILED; sự kiện của shipment khác vẫn có thể được gửi khi một shipment đang chờ retry. Khi một sự kiện hết lượt, các sự kiện mới hơn có thể tiếp tục. Manual retry sau đó vẫn giữ sequence cũ; CRM phải tránh ghi đè trạng thái mới bằng sự kiện cũ.
 
-Mặc định: timeout 10 giây, maxAttempts 12 lượt tổng cộng, baseDelay 5 giây, maxDelay 1 giờ. Thời gian chờ sau lượt lỗi thứ n là `min(maxDelayMs, baseDelayMs * 2^(n-1))`. Không follow redirect; lỗi redirect được coi như lỗi kết nối để tránh gửi dữ liệu sang endpoint khác. Body phản hồi CRM không được ghi vào database hoặc log.
+Mặc định: timeout 10 giây, maxAttempts 12 lượt tổng cộng, baseDelay 5 giây, maxDelay 1 giờ. Thời gian chờ sau lượt lỗi thứ n là `min(maxDelayMs, baseDelayMs * 2^(n-1))`. Không follow redirect; HTTP 3xx được ghi nhận là lỗi để tránh gửi dữ liệu sang endpoint khác. Body phản hồi CRM không được ghi vào database hoặc log.
 
 Worker dùng URL snapshot trong hàng đợi và khóa ký hiện tại trong cấu hình. Đổi URL yêu cầu chủ động retry các sự kiện FAILED/ENDPOINT_CHANGED; đổi khóa ký không đổi payload/eventId. Khi luân chuyển khóa, CRM nên chấp nhận cả khóa cũ và mới trong giai đoạn chuyển tiếp để xử lý request đang bay.
 
