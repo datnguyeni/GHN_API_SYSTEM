@@ -6,7 +6,7 @@ Dịch vụ vận chuyển độc lập: CRM/Web bán lẻ gọi API → Shippin
 
 ## Chạy thử không cần tài khoản GHN
 
-Yêu cầu Java 21+, Maven 3.6.3+; Node.js 22.18+ chỉ để build/sửa giao diện. Các lệnh dưới chạy từ thư mục gốc repo.
+Yêu cầu Java 21+, Maven 3.6.3+; Next.js 16+ chỉ để build/sửa giao diện. Các lệnh dưới chạy từ thư mục gốc repo.
 
 ```powershell
 npm ci
