@@ -1,81 +1,80 @@
-# Shipping GHN — gói mã nguồn tích hợp
+# GHN Shipping Service
 
-## Chạy demo độc lập để xem giao diện
+Dịch vụ vận chuyển độc lập: CRM/Web bán lẻ gọi API → Shipping Service → GHN. Không cần backend Java, database, schema, phân quyền hoặc module CRM. Backend mới dùng Node.js 24 và SQLite riêng; frontend React gọi API thật của service.
 
-Cài và mở Docker Desktop (Linux containers), rồi chạy trong thư mục này:
+Đã bỏ code đơn bán, phiếu xuất, tồn kho, khuyến mãi, công nợ, xác nhận báo giá và cập nhật đơn CRM. CRM tự quyết định COD, hàng gửi và đợt giao. Service chỉ xác thực bên gọi, kiểm tra dữ liệu vận chuyển, lấy cấu hình shop, tính phí, tạo/tra cứu vận đơn và nhận webhook GHN. Trạng thái gửi về CRM qua **API polling**; chưa có webhook đẩy chủ động sang CRM.
 
-```powershell
-docker compose up --build
-```
+## Chạy thử không cần tài khoản GHN
 
-Mở http://localhost:8080. Dừng bằng `Ctrl+C`, dọn container bằng `docker compose down`.
-
-Demo dùng **giao diện Shipping hiện có** với API giả lập trong bộ nhớ trình duyệt, không cần CRM, PostgreSQL hoặc token GHN. Không nhập token thật. Dữ liệu tự khôi phục khi tải lại trang; mỗi tab trình duyệt có dữ liệu riêng.
-
-- Đơn `SO-DEMO-001`: chọn **Xử lý / Tracking**, chọn phiếu xuất, tỉnh/phường, nhập khối lượng rồi **Tính phí GHN** và xác nhận để xem vận đơn mẫu.
-- Đơn `002` và `003`: xem trạng thái đang giao/thành công và lịch sử tracking mẫu.
-- Đơn `004`: thử gửi lại vận đơn lỗi.
-- Tab **Shop & kho**: xem, sửa hoặc thêm cấu hình bằng token giả bất kỳ. Tab **Tài khoản GHN**: thử tạo khóa webhook giả lập hoặc xóa tài khoản mẫu.
-
-Phí, địa chỉ và tracking trong demo đều giả lập; demo không chạy backend Java, migration, phân quyền CRM hay gọi GHN thật. Kiểm thử tích hợp thật vẫn theo tài liệu bên dưới.
-
-Nếu không có Docker, dùng Node.js 22.18+:
+Yêu cầu Node.js 24+.
 
 ```powershell
 npm ci
-npm run dev
+npm run build
+npm run demo
 ```
 
-Mở URL Local mà Vite in ra (thường http://127.0.0.1:5173). Kiểm tra bằng `npm run build` và `npm run test:demo`.
+Mở http://127.0.0.1:8080. Nhập service token mẫu `demo-only-service-access-token-1234567890`, bấm Kết nối rồi Tính phí/Tạo vận đơn. Chế độ demo dùng adapter giả lập, không gọi GHN; dữ liệu được lưu tại `data/demo.sqlite` và tồn tại sau khi khởi động lại. Payload mẫu chỉ có mã địa chỉ demo.
 
-Gói code lấy từ CRM Đại Thắng ngày 07/11/2026 để bàn giao và đưa vào module Shipping.
-Chạy chung backend/database của CRM. Không cần service riêng.
+## Kết nối GHN thật
 
-## Bắt đầu
+1. Chép `config/service.example.json` thành `config/service.json` (file này bị git bỏ qua).
+2. Thay service token, webhook secret bằng chuỗi ngẫu nhiên ít nhất 32 ký tự; điền token GHN, Shop ID và mã tỉnh/phường GHN thật cho địa chỉ gửi/hoàn.
+3. Chọn `STAGING` hoặc `PRODUCTION` cho từng shop. Service token và token GHN là hai khóa khác nhau. Mỗi hệ thống gọi có `id`, token và danh sách shop được phép riêng. Cấu hình chỉ được quản trị bằng file, không trả token GHN qua API.
 
-1. Đọc `docs/INTEGRATION.md` để hiểu các phụ thuộc với CRM.
-2. Xem trước việc chép code vào một checkout CRM tương thích:
+Tạo khóa ngẫu nhiên:
 
 ```powershell
-./scripts/install-source.ps1 -CrmRoot D:\path\to\crm -WhatIf
+node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 ```
 
-3. Chép backend, frontend, phần nối Sales và test:
+Chạy local:
 
 ```powershell
-./scripts/install-source.ps1 -CrmRoot D:\path\to\crm
+$env:GHN_CONFIG_FILE = 'config/service.json'
+npm run build
+npm start
 ```
 
-Script chỉ thêm file mới hoặc bỏ qua file giống hệt. Nếu có file khác nội dung, script dừng trước khi chép để người tích hợp merge thủ công. Script không chạy SQL, không sửa đăng ký module, không cài dependency và không deploy.
+Hoặc chạy `docker compose up --build` sau khi tạo cấu hình. Docker lưu database trong volume `shipping-data`; file cấu hình mount chỉ đọc. Node mặc định bind `127.0.0.1:8080`; Docker bind trong container và chỉ publish loopback trên host. Khi cho hệ thống khác gọi, cấu hình reverse proxy HTTPS và quyền truy cập mạng phù hợp.
 
-4. Nối menu/quyền/security và kiểm tra database theo tài liệu.
-5. Build/test trong CRM đích, sau đó kiểm tra GHN Staging.
+Để sửa giao diện: chạy backend ở một terminal và `npm run dev` ở terminal khác. Vite proxy API đến `127.0.0.1:8080`.
 
-## Các thư mục
+## API giữa CRM và Shipping
 
-| Thư mục | Nội dung |
-|---|---|
-| `backend/` | 5 file backend Shipping và 2 file test hiện có |
-| `frontend/` | Màn hình cấu hình, vận đơn/tracking, CSS và type giao tiếp với host |
-| `integration/crm-overlay/` | Controller và form Sales để nối xác nhận báo giá với Shipping; test frontend |
-| `integration/reference/` | Bản tham chiếu các file host có liên quan; không tự động chép vào host |
-| `migrations/reference/` | 5 migration gốc, giữ nguyên để đối chiếu và không làm sai checksum |
-| `docs/` | API, phụ thuộc, database và hướng dẫn kiểm thử |
-| `scripts/` | Chép source, xác minh checksum, relay webhook và test relay |
+Tất cả `/internal/shipping/ghn/*` cần `Authorization: Bearer <service-token>`. Xem [contract và ví dụ](docs/API.md).
 
-## Phạm vi bàn giao
+| Method | Path | Chức năng |
+|---|---|---|
+| GET | `/health` | Trạng thái dịch vụ, chế độ live/mock |
+| GET | `/internal/shipping/ghn/shops` | Shop được cấp quyền, không trả khóa bí mật |
+| GET | `/internal/shipping/ghn/shops/{shopCode}/provinces` | Mã tỉnh GHN |
+| GET | `/internal/shipping/ghn/shops/{shopCode}/wards?provinceId=...` | Mã phường GHN |
+| POST | `/internal/shipping/ghn/preview` | Kiểm tra dữ liệu và tính phí |
+| POST | `/internal/shipping/ghn/create-order` | Tạo vận đơn, bắt buộc Idempotency-Key |
+| GET | `/internal/shipping/ghn/shipments?referenceCode=WEB-123` | Tra cứu dữ liệu đã lưu của bên gọi |
+| GET | `/internal/shipping/ghn/shipments/{id}` | Chi tiết và lịch sử trạng thái đã lưu |
+| POST | `/internal/shipping/ghn/shipments/{id}/reconcile` | Tra cứu GHN để cập nhật dữ liệu đã lưu |
+| POST | `/webhooks/ghn/{shopCode}` | GHN callback, cần X-GHN-Webhook-Secret |
 
-Giữ nguyên code xử lý đang có để giảm thay đổi nghiệp vụ. Chưa refactor toàn bộ thành adapter độc lập: `RetailAccess` và các truy vấn SQL vẫn phụ thuộc schema CRM. `integration/reference/` và tài liệu chỉ rõ các điểm đó cho người tích hợp. Với một hệ thống khác CRM này, cần viết adapter hoặc sửa các truy vấn tương ứng; không thể chỉ chép code rồi chạy.
+GET shipment đọc dữ liệu local. CRM gọi reconcile theo lịch khi cần cập nhật từ GHN, sau đó tự cập nhật đơn bán của mình. Bên gọi chỉ xem vận đơn của chính nó, dù hai bên được dùng chung một shop.
 
-Không có token GHN thật, file .env hay dữ liệu khách hàng. Tài khoản/shop/token được nhập trong giao diện cấu hình sau khi tích hợp. Không thay đổi CRM gốc.
+## Vận hành và giới hạn
 
-`module-manifest.json` mô tả gói bàn giao, chưa phải cơ chế cài plugin tự động của host.
+- Chạy **một tiến trình/replica** trên một database SQLite. Không dùng cluster hoặc nhiều container dùng chung file. Đổi quy mô cần chuyển store sang database hỗ trợ nhiều worker và thêm cơ chế lease.
+- `Idempotency-Key` được lưu bền vững theo hệ thống gọi. Cùng khóa/cùng payload trả vận đơn cũ; khác payload trả 409. Cùng mã tham chiếu nhưng khóa mới được coi là một đợt giao khác.
+- Mỗi vận đơn dùng UUID nội bộ làm `client_order_code` GHN. Timeout hoặc khởi động lại giữa lúc tạo được đánh dấu UNKNOWN; chỉ lookup, không tự tạo lại. Không đổi khóa để xử lý UNKNOWN vì có thể tạo thêm vận đơn.
+- Webhook được khử trùng và áp dụng theo thời gian sự kiện. Webhook của mã vận đơn chưa biết trả 404 để bên gửi có thể gửi lại; có thể reconcile rồi gửi lại sự kiện. Không ghi nhận doanh thu, tồn kho hay công nợ từ webhook.
+- Database chứa địa chỉ/điện thoại giao hàng; bảo vệ và sao lưu cả database/WAL. Không commit cấu hình thật hoặc đưa nó vào Docker image. Khởi động lại service sau khi đổi cấu hình.
+- Đây là thay đổi API và runtime so với gói CRM cũ; không tự chuyển dữ liệu từ schema CRM. CRM cần đổi sang contract mới. Chưa hỗ trợ API hủy vận đơn hoặc đối soát chuyển tiền COD.
 
-## Kiểm tra gói
+## Kiểm tra
 
 ```powershell
-./scripts/verify-package.ps1
-node --test scripts/ghn-webhook-relay.test.mjs
+npm test
+npm run build
 ```
 
-Xem `docs/VALIDATION.md` để biết kiểm tra đã chạy và các kiểm tra cần thực hiện trong CRM đích.
+Kiểm thử tự động dùng GHN giả lập: auth, phân quyền, idempotency đồng thời, timeout/restart, webhook, lưu bền vững và contract HTTP. Kết nối GHN thật cần kiểm thử Staging bằng tài khoản và mã địa chỉ thực tế trước khi triển khai.
+
+Backend dùng [SQLite tích hợp trong Node.js](https://nodejs.org/docs/latest-v24.x/api/sqlite.html), không cần cài database CRM.

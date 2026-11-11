@@ -1,0 +1,9 @@
+{
+  "clients": [{ "id": "crm", "token": "REPLACE_WITH_RANDOM_SERVICE_TOKEN_32_CHARS_MIN", "shops": ["HCM-01"] }],
+  "shops": [{
+    "code": "HCM-01", "name": "Shop HCM", "shopId": 123456, "environment": "STAGING",
+    "token": "REPLACE_WITH_GHN_TOKEN", "webhookSecret": "REPLACE_WITH_RANDOM_WEBHOOK_SECRET_32_CHARS_MIN",
+    "sender": { "name": "Tên người gửi", "phone": "0900000000", "address": "Địa chỉ lấy hàng", "provinceId": 1000001, "wardId": 2000001 },
+    "returnAddress": { "name": "Tên người nhận hoàn", "phone": "0900000000", "address": "Địa chỉ nhận hoàn", "provinceId": 1000001, "wardId": 2000001 }
+  }]
+}

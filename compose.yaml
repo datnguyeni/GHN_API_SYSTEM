@@ -1,6 +1,11 @@
 services:
-  shipping-demo:
+  shipping:
     build: .
     ports:
-      - "127.0.0.1:8080:80"
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - shipping-data:/app/data
+      - ./config/service.json:/app/config/service.json:ro
     restart: unless-stopped
+volumes:
+  shipping-data:

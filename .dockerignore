@@ -1,9 +1,8 @@
-*
-!package.json
-!package-lock.json
-!tsconfig.json
-!index.html
-!demo/
-!demo/**
-!frontend/
-!frontend/**
+node_modules
+dist
+.git
+.npm-cache
+data
+config/service.json
+.env*
+*.log
